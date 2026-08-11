@@ -1,0 +1,159 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * DDFL design tokens — derived from the league crest (navy shield, electric
+ * blue gator, gold "DDFL" lettering, orange flame accent).
+ *
+ * This is a dark-only theme (sportsbook/broadcast look, not a document), so
+ * there's a single :root definition below and no `.dark` override block —
+ * shadcn scaffolds one by default for light/dark toggling, but nothing here
+ * ever adds a `.dark` class, so a second block would just be dead code.
+ *
+ * Only a few steps per color, not a full 50-950 numeric scale: a mechanically
+ * generated 11-step ramp made blue-600 and navy-600 nearly indistinguishable,
+ * which is more tokens than this project actually uses. Each color below has
+ * a job (background layer, primary action, gold accent, "live" accent) and
+ * the handful of steps it needs to do that job.
+ */
+@theme {
+  /* Navy — page background and surface layers, darkest to lightest. */
+  --color-navy-950: #050b1a; /* html body background */
+  --color-navy-900: #0a1330; /* page sections */
+  --color-navy-800: #0f1c42; /* cards, panels */
+  --color-navy-700: #16274f; /* raised surfaces, hovered cards */
+  --color-navy-600: #223a6b; /* borders / dividers on dark */
+
+  /* Electric blue — primary brand color: links, primary buttons, focus rings. */
+  --color-blue-400: #5b9dfd;
+  --color-blue-500: #2f7dfb;
+  --color-blue-600: #0d5fe0;
+  --color-blue-700: #0a4bb3;
+
+  /* Gold — the main accent. CTAs, active states, trophy/championship motifs. */
+  --color-gold-300: #ffe9a8;
+  --color-gold-400: #f5c542;
+  --color-gold-500: #f5b418;
+  --color-gold-600: #c8860a;
+
+  /* Orange — secondary "hot" accent, reserved for live/urgent UI: live score
+     badges, trade alerts, the ticker's "breaking" tag. Not used decoratively,
+     so it keeps its meaning. */
+  --color-orange-400: #ffb454;
+  --color-orange-500: #fb8b24;
+  --color-orange-600: #d96f0c;
+
+  /* Text on navy. */
+  --color-fg: #f4f7fd;
+  --color-fg-muted: #9fb0d6;
+  --color-fg-subtle: #6b7aa1;
+
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-oswald);
+}
+
+/*
+ ---break---
+ */
+@theme inline {
+  --font-heading: var(--font-display);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ ---break---
+ */
+/*
+ * shadcn primitives (Button, etc.) read these generic semantic names, not the
+ * DDFL-* tokens above directly — so this is where the crest palette actually
+ * becomes "the theme" for every component the library generates from here on.
+ */
+:root {
+  --background: var(--color-navy-950);
+  --foreground: var(--color-fg);
+  --card: var(--color-navy-800);
+  --card-foreground: var(--color-fg);
+  --popover: var(--color-navy-800);
+  --popover-foreground: var(--color-fg);
+  --primary: var(--color-blue-500);
+  --primary-foreground: var(--color-fg);
+  --secondary: var(--color-navy-700);
+  --secondary-foreground: var(--color-fg);
+  --muted: var(--color-navy-800);
+  --muted-foreground: var(--color-fg-muted);
+  --accent: var(--color-gold-500);
+  --accent-foreground: var(--color-navy-950);
+  --destructive: #ef4444;
+  --border: var(--color-navy-600);
+  --input: var(--color-navy-700);
+  --ring: var(--color-blue-400);
+  --chart-1: var(--color-blue-400);
+  --chart-2: var(--color-gold-500);
+  --chart-3: var(--color-orange-500);
+  --chart-4: var(--color-blue-600);
+  --chart-5: var(--color-gold-300);
+  --radius: 0.625rem;
+  --sidebar: var(--color-navy-900);
+  --sidebar-foreground: var(--color-fg);
+  --sidebar-primary: var(--color-blue-500);
+  --sidebar-primary-foreground: var(--color-fg);
+  --sidebar-accent: var(--color-navy-700);
+  --sidebar-accent-foreground: var(--color-fg);
+  --sidebar-border: var(--color-navy-600);
+  --sidebar-ring: var(--color-blue-400);
+}
+
+/*
+ ---break---
+ */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
