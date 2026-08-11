@@ -23,7 +23,6 @@ import { dirname, join } from "node:path";
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const SRC = join(ROOT, "assets/logo-source.png");
 
-const NAVY = "#0a1a3a";
 const NAVY_DEEP = "#050d20";
 
 /**
