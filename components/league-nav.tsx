@@ -9,6 +9,8 @@ import { cn } from "@/lib/utils";
 const TABS = [
   { segment: "standings", label: "Standings" },
   { segment: "history", label: "History" },
+  { segment: "drafts", label: "Drafts" },
+  { segment: "brackets", label: "Brackets" },
 ] as const;
 
 /**

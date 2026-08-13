@@ -20,6 +20,8 @@ import { dirname, join } from "node:path";
 
 import { LEAGUE_TYPES, LEAGUES, type LeagueConfig, type LeagueType } from "../config/leagues.ts";
 import {
+  getDraftPicks,
+  getDrafts,
   getLeague,
   getLosersBracket,
   getRosters,
@@ -35,6 +37,7 @@ import type {
 import type {
   BracketMatchResolved,
   LeagueSnapshot,
+  SnapshotDraft,
   SnapshotSeason,
   SnapshotTeam,
 } from "../lib/sleeper/snapshot-types.ts";
@@ -150,12 +153,45 @@ function buildTeams(
     .sort((a, b) => (a.finish ?? 99) - (b.finish ?? 99) || b.wins - a.wins || b.pointsFor - a.pointsFor);
 }
 
+/**
+ * Every DDFL season so far has exactly one Sleeper draft (no separate rookie
+ * draft object), so this takes the completed one if there is one, else
+ * whatever's there — a not-yet-started draft still has a type and an order,
+ * just no picks yet.
+ */
+async function snapshotDraft(league: SleeperLeague): Promise<SnapshotDraft | null> {
+  const drafts = await getDrafts(league.league_id);
+  const draft = drafts.find((d) => d.status === "complete") ?? drafts[0];
+  if (!draft) return null;
+
+  const rawPicks = await getDraftPicks(draft.draft_id);
+  const picks = rawPicks.map((p) => ({
+    round: p.round,
+    pickNo: p.pick_no,
+    draftSlot: p.draft_slot,
+    rosterId: p.roster_id,
+    playerName: `${p.metadata.first_name} ${p.metadata.last_name}`.trim(),
+    position: p.metadata.position,
+    nflTeam: p.metadata.team,
+    amount: p.metadata.amount != null ? Number(p.metadata.amount) : null,
+  }));
+
+  return {
+    draftId: draft.draft_id,
+    type: draft.type,
+    rounds: picks.reduce((max, p) => Math.max(max, p.round), 0),
+    draftOrder: draft.draft_order,
+    picks,
+  };
+}
+
 async function snapshotSeason(league: SleeperLeague, leagueType: LeagueType): Promise<SnapshotSeason> {
-  const [rosters, users, winnersBracket, losersBracket] = await Promise.all([
+  const [rosters, users, winnersBracket, losersBracket, draft] = await Promise.all([
     getRosters(league.league_id),
     getUsers(league.league_id),
     getWinnersBracket(league.league_id),
     getLosersBracket(league.league_id),
+    snapshotDraft(league),
   ]);
 
   const resolvedWinners = resolveBracket(winnersBracket);
@@ -177,6 +213,7 @@ async function snapshotSeason(league: SleeperLeague, leagueType: LeagueType): Pr
     teams: buildTeams(rosters, users, finishes),
     winnersBracket: resolvedWinners,
     losersBracket: resolvedLosers,
+    draft,
   };
 }
 

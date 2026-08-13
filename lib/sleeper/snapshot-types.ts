@@ -29,6 +29,29 @@ export interface SnapshotSeason {
   teams: SnapshotTeam[];
   winnersBracket: BracketMatchResolved[];
   losersBracket: BracketMatchResolved[];
+  /** Null if the season has no draft yet (shouldn't happen once complete). */
+  draft: SnapshotDraft | null;
+}
+
+export interface SnapshotDraftPick {
+  round: number;
+  pickNo: number;
+  draftSlot: number;
+  rosterId: number;
+  playerName: string;
+  position: string;
+  nflTeam: string;
+  /** Auction dollars spent, in whole dollars. Null for snake/linear drafts. */
+  amount: number | null;
+}
+
+export interface SnapshotDraft {
+  draftId: string;
+  type: "snake" | "auction" | "linear";
+  rounds: number;
+  /** owner_id -> 1-indexed draft slot. Null if Sleeper never set one. */
+  draftOrder: Record<string, number> | null;
+  picks: SnapshotDraftPick[];
 }
 
 export type SleeperLeagueStatus = "pre_draft" | "drafting" | "in_season" | "complete";
