@@ -24,6 +24,7 @@ import {
   getDrafts,
   getLeague,
   getLosersBracket,
+  getMatchups,
   getRosters,
   getUsers,
   getWinnersBracket,
@@ -40,6 +41,7 @@ import type {
   SnapshotDraft,
   SnapshotSeason,
   SnapshotTeam,
+  WeeklyMatchup,
 } from "../lib/sleeper/snapshot-types.ts";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -185,13 +187,53 @@ async function snapshotDraft(league: SleeperLeague): Promise<SnapshotDraft | nul
   };
 }
 
+/**
+ * Fetches every regular-season week's matchups and pairs each matchup_id
+ * into a single WeeklyMatchup. Only called for completed seasons, so
+ * `playoff_week_start` is trusted to be the true, final regular-season
+ * length rather than a settings value that could still change.
+ */
+async function snapshotWeeklyMatchups(league: SleeperLeague): Promise<WeeklyMatchup[]> {
+  const playoffWeekStart = league.settings.playoff_week_start;
+  if (typeof playoffWeekStart !== "number" || playoffWeekStart < 2) return [];
+
+  const regularSeasonWeeks = Array.from({ length: playoffWeekStart - 1 }, (_, i) => i + 1);
+  const weeks = await Promise.all(regularSeasonWeeks.map((week) => getMatchups(league.league_id, week)));
+
+  const results: WeeklyMatchup[] = [];
+  weeks.forEach((matchups, i) => {
+    const week = regularSeasonWeeks[i];
+    const byMatchupId = new Map<number, typeof matchups>();
+    for (const m of matchups) {
+      if (m.matchup_id == null) continue; // bye week — no opponent to pair with
+      const group = byMatchupId.get(m.matchup_id) ?? [];
+      group.push(m);
+      byMatchupId.set(m.matchup_id, group);
+    }
+    for (const pair of byMatchupId.values()) {
+      if (pair.length !== 2) continue; // malformed/incomplete pairing — skip rather than guess
+      const [a, b] = pair;
+      results.push({
+        week,
+        rosterIdA: a.roster_id,
+        pointsA: a.points,
+        rosterIdB: b.roster_id,
+        pointsB: b.points,
+      });
+    }
+  });
+
+  return results;
+}
+
 async function snapshotSeason(league: SleeperLeague, leagueType: LeagueType): Promise<SnapshotSeason> {
-  const [rosters, users, winnersBracket, losersBracket, draft] = await Promise.all([
+  const [rosters, users, winnersBracket, losersBracket, draft, weeklyMatchups] = await Promise.all([
     getRosters(league.league_id),
     getUsers(league.league_id),
     getWinnersBracket(league.league_id),
     getLosersBracket(league.league_id),
     snapshotDraft(league),
+    league.status === "complete" ? snapshotWeeklyMatchups(league) : Promise.resolve([]),
   ]);
 
   const resolvedWinners = resolveBracket(winnersBracket);
@@ -214,6 +256,7 @@ async function snapshotSeason(league: SleeperLeague, leagueType: LeagueType): Pr
     winnersBracket: resolvedWinners,
     losersBracket: resolvedLosers,
     draft,
+    weeklyMatchups,
   };
 }
 

@@ -1832,7 +1832,499 @@
             "amount": 1
           }
         ]
-      }
+      },
+      "weeklyMatchups": [
+        {
+          "week": 1,
+          "rosterIdA": 1,
+          "pointsA": 123.28,
+          "rosterIdB": 9,
+          "pointsB": 81.6
+        },
+        {
+          "week": 1,
+          "rosterIdA": 2,
+          "pointsA": 124.52,
+          "rosterIdB": 4,
+          "pointsB": 101.52
+        },
+        {
+          "week": 1,
+          "rosterIdA": 3,
+          "pointsA": 110.06,
+          "rosterIdB": 5,
+          "pointsB": 72.92
+        },
+        {
+          "week": 1,
+          "rosterIdA": 6,
+          "pointsA": 154.02,
+          "rosterIdB": 8,
+          "pointsB": 119.16
+        },
+        {
+          "week": 1,
+          "rosterIdA": 7,
+          "pointsA": 147.38,
+          "rosterIdB": 10,
+          "pointsB": 183.34
+        },
+        {
+          "week": 2,
+          "rosterIdA": 1,
+          "pointsA": 101.98,
+          "rosterIdB": 6,
+          "pointsB": 126.82
+        },
+        {
+          "week": 2,
+          "rosterIdA": 2,
+          "pointsA": 73.18,
+          "rosterIdB": 8,
+          "pointsB": 120.86
+        },
+        {
+          "week": 2,
+          "rosterIdA": 3,
+          "pointsA": 103.9,
+          "rosterIdB": 9,
+          "pointsB": 139.56
+        },
+        {
+          "week": 2,
+          "rosterIdA": 4,
+          "pointsA": 103.2,
+          "rosterIdB": 10,
+          "pointsB": 106.24
+        },
+        {
+          "week": 2,
+          "rosterIdA": 5,
+          "pointsA": 107.74,
+          "rosterIdB": 7,
+          "pointsB": 149.46
+        },
+        {
+          "week": 3,
+          "rosterIdA": 1,
+          "pointsA": 127.02,
+          "rosterIdB": 5,
+          "pointsB": 62.26
+        },
+        {
+          "week": 3,
+          "rosterIdA": 2,
+          "pointsA": 116,
+          "rosterIdB": 10,
+          "pointsB": 106.08
+        },
+        {
+          "week": 3,
+          "rosterIdA": 3,
+          "pointsA": 134.9,
+          "rosterIdB": 7,
+          "pointsB": 143.42
+        },
+        {
+          "week": 3,
+          "rosterIdA": 4,
+          "pointsA": 88.86,
+          "rosterIdB": 6,
+          "pointsB": 126.14
+        },
+        {
+          "week": 3,
+          "rosterIdA": 8,
+          "pointsA": 95.28,
+          "rosterIdB": 9,
+          "pointsB": 104.88
+        },
+        {
+          "week": 4,
+          "rosterIdA": 1,
+          "pointsA": 140.68,
+          "rosterIdB": 3,
+          "pointsB": 118.1
+        },
+        {
+          "week": 4,
+          "rosterIdA": 2,
+          "pointsA": 107.94,
+          "rosterIdB": 6,
+          "pointsB": 126.72
+        },
+        {
+          "week": 4,
+          "rosterIdA": 4,
+          "pointsA": 105.48,
+          "rosterIdB": 5,
+          "pointsB": 107.8
+        },
+        {
+          "week": 4,
+          "rosterIdA": 7,
+          "pointsA": 118,
+          "rosterIdB": 9,
+          "pointsB": 100.32
+        },
+        {
+          "week": 4,
+          "rosterIdA": 8,
+          "pointsA": 134.04,
+          "rosterIdB": 10,
+          "pointsB": 129.8
+        },
+        {
+          "week": 5,
+          "rosterIdA": 1,
+          "pointsA": 112.2,
+          "rosterIdB": 7,
+          "pointsB": 132.24
+        },
+        {
+          "week": 5,
+          "rosterIdA": 2,
+          "pointsA": 130.42,
+          "rosterIdB": 3,
+          "pointsB": 134.44
+        },
+        {
+          "week": 5,
+          "rosterIdA": 4,
+          "pointsA": 105.64,
+          "rosterIdB": 8,
+          "pointsB": 100.88
+        },
+        {
+          "week": 5,
+          "rosterIdA": 5,
+          "pointsA": 131.46,
+          "rosterIdB": 9,
+          "pointsB": 133.96
+        },
+        {
+          "week": 5,
+          "rosterIdA": 6,
+          "pointsA": 158.74,
+          "rosterIdB": 10,
+          "pointsB": 103.54
+        },
+        {
+          "week": 6,
+          "rosterIdA": 1,
+          "pointsA": 139.2,
+          "rosterIdB": 10,
+          "pointsB": 122.36
+        },
+        {
+          "week": 6,
+          "rosterIdA": 2,
+          "pointsA": 102.82,
+          "rosterIdB": 5,
+          "pointsB": 112.5
+        },
+        {
+          "week": 6,
+          "rosterIdA": 3,
+          "pointsA": 147.98,
+          "rosterIdB": 8,
+          "pointsB": 67.02
+        },
+        {
+          "week": 6,
+          "rosterIdA": 4,
+          "pointsA": 138.4,
+          "rosterIdB": 9,
+          "pointsB": 95.62
+        },
+        {
+          "week": 6,
+          "rosterIdA": 6,
+          "pointsA": 113.56,
+          "rosterIdB": 7,
+          "pointsB": 172.1
+        },
+        {
+          "week": 7,
+          "rosterIdA": 1,
+          "pointsA": 171.9,
+          "rosterIdB": 4,
+          "pointsB": 122.6
+        },
+        {
+          "week": 7,
+          "rosterIdA": 2,
+          "pointsA": 97.14,
+          "rosterIdB": 9,
+          "pointsB": 132.2
+        },
+        {
+          "week": 7,
+          "rosterIdA": 3,
+          "pointsA": 101.84,
+          "rosterIdB": 6,
+          "pointsB": 124.16
+        },
+        {
+          "week": 7,
+          "rosterIdA": 5,
+          "pointsA": 91.58,
+          "rosterIdB": 10,
+          "pointsB": 112.74
+        },
+        {
+          "week": 7,
+          "rosterIdA": 7,
+          "pointsA": 87.52,
+          "rosterIdB": 8,
+          "pointsB": 85.18
+        },
+        {
+          "week": 8,
+          "rosterIdA": 1,
+          "pointsA": 125.84,
+          "rosterIdB": 2,
+          "pointsB": 124.96
+        },
+        {
+          "week": 8,
+          "rosterIdA": 3,
+          "pointsA": 136.72,
+          "rosterIdB": 10,
+          "pointsB": 120.88
+        },
+        {
+          "week": 8,
+          "rosterIdA": 4,
+          "pointsA": 141.2,
+          "rosterIdB": 7,
+          "pointsB": 111.64
+        },
+        {
+          "week": 8,
+          "rosterIdA": 5,
+          "pointsA": 125.6,
+          "rosterIdB": 8,
+          "pointsB": 99.58
+        },
+        {
+          "week": 8,
+          "rosterIdA": 6,
+          "pointsA": 158.14,
+          "rosterIdB": 9,
+          "pointsB": 112.04
+        },
+        {
+          "week": 9,
+          "rosterIdA": 1,
+          "pointsA": 116.12,
+          "rosterIdB": 8,
+          "pointsB": 87.22
+        },
+        {
+          "week": 9,
+          "rosterIdA": 2,
+          "pointsA": 134.8,
+          "rosterIdB": 7,
+          "pointsB": 148.4
+        },
+        {
+          "week": 9,
+          "rosterIdA": 3,
+          "pointsA": 132.92,
+          "rosterIdB": 4,
+          "pointsB": 104.88
+        },
+        {
+          "week": 9,
+          "rosterIdA": 5,
+          "pointsA": 109.7,
+          "rosterIdB": 6,
+          "pointsB": 157.2
+        },
+        {
+          "week": 9,
+          "rosterIdA": 9,
+          "pointsA": 68.02,
+          "rosterIdB": 10,
+          "pointsB": 119.06
+        },
+        {
+          "week": 10,
+          "rosterIdA": 1,
+          "pointsA": 133.1,
+          "rosterIdB": 9,
+          "pointsB": 149.42
+        },
+        {
+          "week": 10,
+          "rosterIdA": 2,
+          "pointsA": 109.4,
+          "rosterIdB": 4,
+          "pointsB": 82.6
+        },
+        {
+          "week": 10,
+          "rosterIdA": 3,
+          "pointsA": 114.48,
+          "rosterIdB": 5,
+          "pointsB": 79.84
+        },
+        {
+          "week": 10,
+          "rosterIdA": 6,
+          "pointsA": 168.58,
+          "rosterIdB": 8,
+          "pointsB": 107.32
+        },
+        {
+          "week": 10,
+          "rosterIdA": 7,
+          "pointsA": 104.2,
+          "rosterIdB": 10,
+          "pointsB": 62.88
+        },
+        {
+          "week": 11,
+          "rosterIdA": 1,
+          "pointsA": 135.88,
+          "rosterIdB": 6,
+          "pointsB": 131.04
+        },
+        {
+          "week": 11,
+          "rosterIdA": 2,
+          "pointsA": 95.18,
+          "rosterIdB": 8,
+          "pointsB": 91.3
+        },
+        {
+          "week": 11,
+          "rosterIdA": 3,
+          "pointsA": 125.68,
+          "rosterIdB": 9,
+          "pointsB": 121.16
+        },
+        {
+          "week": 11,
+          "rosterIdA": 4,
+          "pointsA": 136.28,
+          "rosterIdB": 10,
+          "pointsB": 163.44
+        },
+        {
+          "week": 11,
+          "rosterIdA": 5,
+          "pointsA": 125.94,
+          "rosterIdB": 7,
+          "pointsB": 101.78
+        },
+        {
+          "week": 12,
+          "rosterIdA": 1,
+          "pointsA": 119.12,
+          "rosterIdB": 5,
+          "pointsB": 127.4
+        },
+        {
+          "week": 12,
+          "rosterIdA": 2,
+          "pointsA": 100.08,
+          "rosterIdB": 10,
+          "pointsB": 122.8
+        },
+        {
+          "week": 12,
+          "rosterIdA": 3,
+          "pointsA": 132.68,
+          "rosterIdB": 7,
+          "pointsB": 103.6
+        },
+        {
+          "week": 12,
+          "rosterIdA": 4,
+          "pointsA": 90.06,
+          "rosterIdB": 6,
+          "pointsB": 107.06
+        },
+        {
+          "week": 12,
+          "rosterIdA": 8,
+          "pointsA": 77.5,
+          "rosterIdB": 9,
+          "pointsB": 124.02
+        },
+        {
+          "week": 13,
+          "rosterIdA": 1,
+          "pointsA": 91.2,
+          "rosterIdB": 3,
+          "pointsB": 137.58
+        },
+        {
+          "week": 13,
+          "rosterIdA": 2,
+          "pointsA": 102.68,
+          "rosterIdB": 6,
+          "pointsB": 145.52
+        },
+        {
+          "week": 13,
+          "rosterIdA": 4,
+          "pointsA": 110.74,
+          "rosterIdB": 5,
+          "pointsB": 128.5
+        },
+        {
+          "week": 13,
+          "rosterIdA": 7,
+          "pointsA": 165.92,
+          "rosterIdB": 9,
+          "pointsB": 107.36
+        },
+        {
+          "week": 13,
+          "rosterIdA": 8,
+          "pointsA": 99.96,
+          "rosterIdB": 10,
+          "pointsB": 125.64
+        },
+        {
+          "week": 14,
+          "rosterIdA": 1,
+          "pointsA": 135.1,
+          "rosterIdB": 7,
+          "pointsB": 132.68
+        },
+        {
+          "week": 14,
+          "rosterIdA": 2,
+          "pointsA": 98.16,
+          "rosterIdB": 3,
+          "pointsB": 86.8
+        },
+        {
+          "week": 14,
+          "rosterIdA": 4,
+          "pointsA": 138.52,
+          "rosterIdB": 8,
+          "pointsB": 151.92
+        },
+        {
+          "week": 14,
+          "rosterIdA": 5,
+          "pointsA": 132.98,
+          "rosterIdB": 9,
+          "pointsB": 148.14
+        },
+        {
+          "week": 14,
+          "rosterIdA": 6,
+          "pointsA": 172.42,
+          "rosterIdB": 10,
+          "pointsB": 72.9
+        }
+      ]
     },
     {
       "leagueType": "redraft",
@@ -3665,7 +4157,499 @@
             "amount": 1
           }
         ]
-      }
+      },
+      "weeklyMatchups": [
+        {
+          "week": 1,
+          "rosterIdA": 1,
+          "pointsA": 121.38,
+          "rosterIdB": 7,
+          "pointsB": 121.92
+        },
+        {
+          "week": 1,
+          "rosterIdA": 2,
+          "pointsA": 111.9,
+          "rosterIdB": 4,
+          "pointsB": 111.02
+        },
+        {
+          "week": 1,
+          "rosterIdA": 3,
+          "pointsA": 70.94,
+          "rosterIdB": 5,
+          "pointsB": 73.22
+        },
+        {
+          "week": 1,
+          "rosterIdA": 6,
+          "pointsA": 106.26,
+          "rosterIdB": 8,
+          "pointsB": 138.42
+        },
+        {
+          "week": 1,
+          "rosterIdA": 9,
+          "pointsA": 102.88,
+          "rosterIdB": 10,
+          "pointsB": 137.46
+        },
+        {
+          "week": 2,
+          "rosterIdA": 1,
+          "pointsA": 147,
+          "rosterIdB": 2,
+          "pointsB": 184.96
+        },
+        {
+          "week": 2,
+          "rosterIdA": 3,
+          "pointsA": 87.04,
+          "rosterIdB": 7,
+          "pointsB": 96.1
+        },
+        {
+          "week": 2,
+          "rosterIdA": 4,
+          "pointsA": 97.98,
+          "rosterIdB": 6,
+          "pointsB": 100.9
+        },
+        {
+          "week": 2,
+          "rosterIdA": 5,
+          "pointsA": 89.14,
+          "rosterIdB": 9,
+          "pointsB": 112.04
+        },
+        {
+          "week": 2,
+          "rosterIdA": 8,
+          "pointsA": 141.28,
+          "rosterIdB": 10,
+          "pointsB": 143.52
+        },
+        {
+          "week": 3,
+          "rosterIdA": 1,
+          "pointsA": 123.84,
+          "rosterIdB": 5,
+          "pointsB": 113.76
+        },
+        {
+          "week": 3,
+          "rosterIdA": 2,
+          "pointsA": 130.78,
+          "rosterIdB": 8,
+          "pointsB": 131.66
+        },
+        {
+          "week": 3,
+          "rosterIdA": 3,
+          "pointsA": 99.92,
+          "rosterIdB": 9,
+          "pointsB": 141.32
+        },
+        {
+          "week": 3,
+          "rosterIdA": 4,
+          "pointsA": 100.76,
+          "rosterIdB": 7,
+          "pointsB": 84.56
+        },
+        {
+          "week": 3,
+          "rosterIdA": 6,
+          "pointsA": 130.64,
+          "rosterIdB": 10,
+          "pointsB": 82.72
+        },
+        {
+          "week": 4,
+          "rosterIdA": 1,
+          "pointsA": 134.78,
+          "rosterIdB": 3,
+          "pointsB": 118.24
+        },
+        {
+          "week": 4,
+          "rosterIdA": 2,
+          "pointsA": 109.72,
+          "rosterIdB": 6,
+          "pointsB": 122.4
+        },
+        {
+          "week": 4,
+          "rosterIdA": 4,
+          "pointsA": 143.28,
+          "rosterIdB": 10,
+          "pointsB": 109.86
+        },
+        {
+          "week": 4,
+          "rosterIdA": 5,
+          "pointsA": 101.5,
+          "rosterIdB": 8,
+          "pointsB": 132.5
+        },
+        {
+          "week": 4,
+          "rosterIdA": 7,
+          "pointsA": 103.44,
+          "rosterIdB": 9,
+          "pointsB": 134.68
+        },
+        {
+          "week": 5,
+          "rosterIdA": 1,
+          "pointsA": 163.72,
+          "rosterIdB": 9,
+          "pointsB": 94.62
+        },
+        {
+          "week": 5,
+          "rosterIdA": 2,
+          "pointsA": 123.92,
+          "rosterIdB": 10,
+          "pointsB": 113.12
+        },
+        {
+          "week": 5,
+          "rosterIdA": 3,
+          "pointsA": 93.88,
+          "rosterIdB": 6,
+          "pointsB": 125.2
+        },
+        {
+          "week": 5,
+          "rosterIdA": 4,
+          "pointsA": 152.86,
+          "rosterIdB": 8,
+          "pointsB": 164.82
+        },
+        {
+          "week": 5,
+          "rosterIdA": 5,
+          "pointsA": 114.1,
+          "rosterIdB": 7,
+          "pointsB": 97.84
+        },
+        {
+          "week": 6,
+          "rosterIdA": 1,
+          "pointsA": 120.84,
+          "rosterIdB": 10,
+          "pointsB": 83.7
+        },
+        {
+          "week": 6,
+          "rosterIdA": 2,
+          "pointsA": 96.72,
+          "rosterIdB": 9,
+          "pointsB": 97.44
+        },
+        {
+          "week": 6,
+          "rosterIdA": 3,
+          "pointsA": 107.88,
+          "rosterIdB": 8,
+          "pointsB": 152.48
+        },
+        {
+          "week": 6,
+          "rosterIdA": 4,
+          "pointsA": 125.86,
+          "rosterIdB": 5,
+          "pointsB": 89.64
+        },
+        {
+          "week": 6,
+          "rosterIdA": 6,
+          "pointsA": 126.02,
+          "rosterIdB": 7,
+          "pointsB": 103.04
+        },
+        {
+          "week": 7,
+          "rosterIdA": 1,
+          "pointsA": 146.42,
+          "rosterIdB": 6,
+          "pointsB": 110.04
+        },
+        {
+          "week": 7,
+          "rosterIdA": 2,
+          "pointsA": 143.94,
+          "rosterIdB": 5,
+          "pointsB": 114.86
+        },
+        {
+          "week": 7,
+          "rosterIdA": 3,
+          "pointsA": 130.36,
+          "rosterIdB": 4,
+          "pointsB": 122.56
+        },
+        {
+          "week": 7,
+          "rosterIdA": 7,
+          "pointsA": 100.34,
+          "rosterIdB": 10,
+          "pointsB": 72
+        },
+        {
+          "week": 7,
+          "rosterIdA": 8,
+          "pointsA": 134.04,
+          "rosterIdB": 9,
+          "pointsB": 99.68
+        },
+        {
+          "week": 8,
+          "rosterIdA": 1,
+          "pointsA": 62.18,
+          "rosterIdB": 4,
+          "pointsB": 138.06
+        },
+        {
+          "week": 8,
+          "rosterIdA": 2,
+          "pointsA": 155.92,
+          "rosterIdB": 3,
+          "pointsB": 116.98
+        },
+        {
+          "week": 8,
+          "rosterIdA": 5,
+          "pointsA": 97.42,
+          "rosterIdB": 10,
+          "pointsB": 155.32
+        },
+        {
+          "week": 8,
+          "rosterIdA": 6,
+          "pointsA": 89.56,
+          "rosterIdB": 9,
+          "pointsB": 146.08
+        },
+        {
+          "week": 8,
+          "rosterIdA": 7,
+          "pointsA": 104.96,
+          "rosterIdB": 8,
+          "pointsB": 150.86
+        },
+        {
+          "week": 9,
+          "rosterIdA": 1,
+          "pointsA": 173.24,
+          "rosterIdB": 8,
+          "pointsB": 109.2
+        },
+        {
+          "week": 9,
+          "rosterIdA": 2,
+          "pointsA": 102.14,
+          "rosterIdB": 7,
+          "pointsB": 90.92
+        },
+        {
+          "week": 9,
+          "rosterIdA": 3,
+          "pointsA": 141.02,
+          "rosterIdB": 10,
+          "pointsB": 80.42
+        },
+        {
+          "week": 9,
+          "rosterIdA": 4,
+          "pointsA": 100.32,
+          "rosterIdB": 9,
+          "pointsB": 152.86
+        },
+        {
+          "week": 9,
+          "rosterIdA": 5,
+          "pointsA": 86.4,
+          "rosterIdB": 6,
+          "pointsB": 121.38
+        },
+        {
+          "week": 10,
+          "rosterIdA": 1,
+          "pointsA": 128.58,
+          "rosterIdB": 7,
+          "pointsB": 123.14
+        },
+        {
+          "week": 10,
+          "rosterIdA": 2,
+          "pointsA": 135.2,
+          "rosterIdB": 4,
+          "pointsB": 106.74
+        },
+        {
+          "week": 10,
+          "rosterIdA": 3,
+          "pointsA": 80.9,
+          "rosterIdB": 5,
+          "pointsB": 60.62
+        },
+        {
+          "week": 10,
+          "rosterIdA": 6,
+          "pointsA": 117.22,
+          "rosterIdB": 8,
+          "pointsB": 196.2
+        },
+        {
+          "week": 10,
+          "rosterIdA": 9,
+          "pointsA": 155.14,
+          "rosterIdB": 10,
+          "pointsB": 48.24
+        },
+        {
+          "week": 11,
+          "rosterIdA": 1,
+          "pointsA": 106.52,
+          "rosterIdB": 2,
+          "pointsB": 102
+        },
+        {
+          "week": 11,
+          "rosterIdA": 3,
+          "pointsA": 118.18,
+          "rosterIdB": 7,
+          "pointsB": 85.24
+        },
+        {
+          "week": 11,
+          "rosterIdA": 4,
+          "pointsA": 137.06,
+          "rosterIdB": 6,
+          "pointsB": 107.2
+        },
+        {
+          "week": 11,
+          "rosterIdA": 5,
+          "pointsA": 98.72,
+          "rosterIdB": 9,
+          "pointsB": 101.42
+        },
+        {
+          "week": 11,
+          "rosterIdA": 8,
+          "pointsA": 86.84,
+          "rosterIdB": 10,
+          "pointsB": 88.48
+        },
+        {
+          "week": 12,
+          "rosterIdA": 1,
+          "pointsA": 188.04,
+          "rosterIdB": 5,
+          "pointsB": 94.56
+        },
+        {
+          "week": 12,
+          "rosterIdA": 2,
+          "pointsA": 144.06,
+          "rosterIdB": 8,
+          "pointsB": 70.68
+        },
+        {
+          "week": 12,
+          "rosterIdA": 3,
+          "pointsA": 162.78,
+          "rosterIdB": 9,
+          "pointsB": 144.12
+        },
+        {
+          "week": 12,
+          "rosterIdA": 4,
+          "pointsA": 96.92,
+          "rosterIdB": 7,
+          "pointsB": 95.16
+        },
+        {
+          "week": 12,
+          "rosterIdA": 6,
+          "pointsA": 124.56,
+          "rosterIdB": 10,
+          "pointsB": 102.92
+        },
+        {
+          "week": 13,
+          "rosterIdA": 1,
+          "pointsA": 87.76,
+          "rosterIdB": 3,
+          "pointsB": 125.94
+        },
+        {
+          "week": 13,
+          "rosterIdA": 2,
+          "pointsA": 141.32,
+          "rosterIdB": 6,
+          "pointsB": 93.4
+        },
+        {
+          "week": 13,
+          "rosterIdA": 4,
+          "pointsA": 123.32,
+          "rosterIdB": 10,
+          "pointsB": 80.22
+        },
+        {
+          "week": 13,
+          "rosterIdA": 5,
+          "pointsA": 103.7,
+          "rosterIdB": 8,
+          "pointsB": 99.34
+        },
+        {
+          "week": 13,
+          "rosterIdA": 7,
+          "pointsA": 129.36,
+          "rosterIdB": 9,
+          "pointsB": 131.54
+        },
+        {
+          "week": 14,
+          "rosterIdA": 1,
+          "pointsA": 107.18,
+          "rosterIdB": 9,
+          "pointsB": 144.06
+        },
+        {
+          "week": 14,
+          "rosterIdA": 2,
+          "pointsA": 137.26,
+          "rosterIdB": 10,
+          "pointsB": 116.84
+        },
+        {
+          "week": 14,
+          "rosterIdA": 3,
+          "pointsA": 113.78,
+          "rosterIdB": 6,
+          "pointsB": 125.7
+        },
+        {
+          "week": 14,
+          "rosterIdA": 4,
+          "pointsA": 112.96,
+          "rosterIdB": 8,
+          "pointsB": 117
+        },
+        {
+          "week": 14,
+          "rosterIdA": 5,
+          "pointsA": 116.94,
+          "rosterIdB": 7,
+          "pointsB": 111.06
+        }
+      ]
     },
     {
       "leagueType": "redraft",
@@ -3886,7 +4870,8 @@
         "rounds": 0,
         "draftOrder": null,
         "picks": []
-      }
+      },
+      "weeklyMatchups": []
     }
   ]
 }

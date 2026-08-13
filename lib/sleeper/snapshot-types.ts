@@ -31,6 +31,24 @@ export interface SnapshotSeason {
   losersBracket: BracketMatchResolved[];
   /** Null if the season has no draft yet (shouldn't happen once complete). */
   draft: SnapshotDraft | null;
+  /**
+   * Regular-season matchups only (weeks before playoff_week_start) — the
+   * source data for head-to-head records and the record book. Playoff
+   * matches are deliberately excluded: they're elimination games between
+   * whichever teams the bracket paired, not part of the round-robin-ish
+   * regular season rotation "head-to-head" normally means, and they're
+   * already represented in winnersBracket/losersBracket above. Empty for
+   * any season that isn't complete.
+   */
+  weeklyMatchups: WeeklyMatchup[];
+}
+
+export interface WeeklyMatchup {
+  week: number;
+  rosterIdA: number;
+  pointsA: number;
+  rosterIdB: number;
+  pointsB: number;
 }
 
 export interface SnapshotDraftPick {

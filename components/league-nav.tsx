@@ -11,6 +11,8 @@ const TABS = [
   { segment: "history", label: "History" },
   { segment: "drafts", label: "Drafts" },
   { segment: "brackets", label: "Brackets" },
+  { segment: "head-to-head", label: "Head-to-Head" },
+  { segment: "records", label: "Records" },
 ] as const;
 
 /**
@@ -23,25 +25,27 @@ export function LeagueNav({ league }: { league: LeagueType }) {
   const activeSegment = useSelectedLayoutSegment();
 
   return (
-    <nav className="flex gap-6 border-b border-navy-600">
-      {TABS.map((tab) => {
-        const isActive = activeSegment === tab.segment;
-        return (
-          <Link
-            key={tab.segment}
-            href={`/${league}/${tab.segment}`}
-            aria-current={isActive ? "page" : undefined}
-            className={cn(
-              "border-b-2 pb-3 text-sm font-medium transition-colors",
-              isActive
-                ? "border-gold-500 text-fg"
-                : "border-transparent text-fg-muted hover:text-fg",
-            )}
-          >
-            {tab.label}
-          </Link>
-        );
-      })}
+    <nav className="overflow-x-auto border-b border-navy-600">
+      <div className="flex w-max gap-6">
+        {TABS.map((tab) => {
+          const isActive = activeSegment === tab.segment;
+          return (
+            <Link
+              key={tab.segment}
+              href={`/${league}/${tab.segment}`}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "border-b-2 pb-3 text-sm font-medium whitespace-nowrap transition-colors",
+                isActive
+                  ? "border-gold-500 text-fg"
+                  : "border-transparent text-fg-muted hover:text-fg",
+              )}
+            >
+              {tab.label}
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }
