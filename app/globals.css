@@ -157,3 +157,33 @@
     @apply font-sans;
   }
 }
+
+/*
+ * The news ticker's content is rendered twice back-to-back (see
+ * SiteTicker), so animating exactly -50% is a seamless loop — the second
+ * copy is scrolling into the exact position the first one just vacated.
+ * Pure CSS rather than Motion/JS: it's one continuous linear loop with no
+ * state, so there's nothing a JS-driven animation would buy here.
+ */
+@keyframes ticker-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.ticker-track {
+  animation: ticker-scroll 45s linear infinite;
+}
+
+.ticker-track:hover {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ticker-track {
+    animation: none;
+  }
+}

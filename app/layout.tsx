@@ -3,6 +3,7 @@ import { Inter, Oswald } from "next/font/google";
 import "./globals.css";
 
 import { SiteHeader } from "@/components/site-header";
+import { SiteTicker } from "@/components/site-ticker";
 
 // Inter for body copy, Oswald (condensed, heavy) for headlines and scores —
 // the second one is what gives the site its broadcast-graphics feel instead
@@ -43,9 +44,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`h-full antialiased ${inter.variable} ${oswald.variable}`}
     >
-      <body className="min-h-full flex flex-col">
+      <body className="min-h-full flex flex-col pb-10">
         <SiteHeader />
         {children}
+        <SiteTicker />
       </body>
     </html>
   );
