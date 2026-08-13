@@ -69,19 +69,55 @@ function resolveBracket(matches: SleeperBracketMatch[]): BracketMatchResolved[] 
 }
 
 /**
- * Only the placement (championship / 3rd-place-game / etc.) matches carry a
- * `p` field. A match with p=N sends its winner to Nth and its loser to
- * (N+1)th. Teams that didn't play in any placement match (bounced from the
- * playoffs before one, or the season isn't over yet) are left unranked
- * here — full finish resolution including consolation standings is Phase 2.
+ * Full 1..N finish for every roster in a completed season, not just the
+ * playoff bracket. Only placement matches (the ones carrying a `p` field —
+ * the championship, 3rd-place game, etc.) resolve a finish directly; this
+ * combines three sources, in order:
+ *
+ *  1. The winners bracket's placement matches -> 1st, 2nd, 3rd, 4th, ...
+ *  2. The losers/consolation bracket's placement matches, numbered
+ *     continuing on from wherever the winners bracket left off (Sleeper's
+ *     `p` field there is relative to that bracket, e.g. its own "p:1" is a
+ *     5th-place game once 4 teams are already placed above it — verified
+ *     against a real completed DDFL season rather than assumed).
+ *  3. Anyone still unplaced (Sleeper doesn't always generate a consolation
+ *     game for every non-playoff team) is ranked by regular-season record —
+ *     wins, then points — for the remaining places.
  */
-function computeFinishes(bracket: BracketMatchResolved[]): Map<number, number> {
+function computeFinishes(
+  winnersBracket: BracketMatchResolved[],
+  losersBracket: BracketMatchResolved[],
+  rosters: SleeperRoster[],
+): Map<number, number> {
   const finishes = new Map<number, number>();
-  for (const match of bracket) {
-    if (match.placement == null) continue;
-    if (match.winnerRosterId != null) finishes.set(match.winnerRosterId, match.placement);
-    if (match.loserRosterId != null) finishes.set(match.loserRosterId, match.placement + 1);
+
+  const applyBracket = (bracket: BracketMatchResolved[], offset: number) => {
+    for (const match of bracket) {
+      if (match.placement == null) continue;
+      if (match.winnerRosterId != null) finishes.set(match.winnerRosterId, offset + match.placement);
+      if (match.loserRosterId != null) finishes.set(match.loserRosterId, offset + match.placement + 1);
+    }
+  };
+
+  applyBracket(winnersBracket, 0);
+  applyBracket(losersBracket, finishes.size);
+
+  const remaining = rosters
+    .filter((r) => !finishes.has(r.roster_id))
+    .sort((a, b) => {
+      const winsDiff = (b.settings.wins ?? 0) - (a.settings.wins ?? 0);
+      if (winsDiff !== 0) return winsDiff;
+      const aPts = (a.settings.fpts ?? 0) + (a.settings.fpts_decimal ?? 0) / 100;
+      const bPts = (b.settings.fpts ?? 0) + (b.settings.fpts_decimal ?? 0) / 100;
+      return bPts - aPts;
+    });
+
+  let nextPlacement = finishes.size + 1;
+  for (const roster of remaining) {
+    finishes.set(roster.roster_id, nextPlacement);
+    nextPlacement += 1;
   }
+
   return finishes;
 }
 
@@ -124,7 +160,14 @@ async function snapshotSeason(league: SleeperLeague, leagueType: LeagueType): Pr
 
   const resolvedWinners = resolveBracket(winnersBracket);
   const resolvedLosers = resolveBracket(losersBracket);
-  const finishes = computeFinishes(resolvedWinners);
+  // A "finish" is only meaningful once a season is actually over — a
+  // pre-draft or in-progress season's bracket is empty or unresolved, so
+  // ranking it now would just be regular-season order dressed up as a final
+  // placement.
+  const finishes =
+    league.status === "complete"
+      ? computeFinishes(resolvedWinners, resolvedLosers, rosters)
+      : new Map<number, number>();
 
   return {
     leagueType,

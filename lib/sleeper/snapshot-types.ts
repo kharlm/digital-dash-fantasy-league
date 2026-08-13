@@ -50,3 +50,22 @@ export interface LeagueSnapshot {
   leagueType: LeagueType;
   seasons: SnapshotSeason[];
 }
+
+/**
+ * A manager's aggregate record across every *completed* season, grouped by
+ * Sleeper's owner_id (stable across seasons for the same person) rather than
+ * roster_id or team name (both reset/can change each season).
+ */
+export interface ManagerTrend {
+  ownerId: string;
+  teamName: string;
+  displayName: string;
+  avatar: string | null;
+  seasonsPlayed: number;
+  wins: number;
+  losses: number;
+  ties: number;
+  avgFinish: number | null;
+  bestFinish: number | null;
+  worstFinish: number | null;
+}

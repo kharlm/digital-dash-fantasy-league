@@ -70,20 +70,7 @@
           "ties": 0,
           "pointsFor": 1651.7,
           "pointsAgainst": 1707.82,
-          "finish": null
-        },
-        {
-          "rosterId": 9,
-          "ownerId": "1127811306347683840",
-          "teamName": "Lucho",
-          "displayName": "justindiazcab",
-          "avatar": "15d7cf259bc30eab8f6120f45f652fb6",
-          "wins": 7,
-          "losses": 7,
-          "ties": 0,
-          "pointsFor": 1618.3,
-          "pointsAgainst": 1719.84,
-          "finish": null
+          "finish": 5
         },
         {
           "rosterId": 5,
@@ -96,7 +83,20 @@
           "ties": 0,
           "pointsFor": 1516.22,
           "pointsAgainst": 1692.58,
-          "finish": null
+          "finish": 6
+        },
+        {
+          "rosterId": 9,
+          "ownerId": "1127811306347683840",
+          "teamName": "Lucho",
+          "displayName": "justindiazcab",
+          "avatar": "15d7cf259bc30eab8f6120f45f652fb6",
+          "wins": 7,
+          "losses": 7,
+          "ties": 0,
+          "pointsFor": 1618.3,
+          "pointsAgainst": 1719.84,
+          "finish": 7
         },
         {
           "rosterId": 2,
@@ -109,7 +109,7 @@
           "ties": 0,
           "pointsFor": 1517.28,
           "pointsAgainst": 1637.58,
-          "finish": null
+          "finish": 8
         },
         {
           "rosterId": 4,
@@ -122,7 +122,7 @@
           "ties": 0,
           "pointsFor": 1569.98,
           "pointsAgainst": 1737.98,
-          "finish": null
+          "finish": 9
         },
         {
           "rosterId": 8,
@@ -135,7 +135,7 @@
           "ties": 0,
           "pointsFor": 1437.22,
           "pointsAgainst": 1696.68,
-          "finish": null
+          "finish": 10
         }
       ],
       "winnersBracket": [
@@ -274,19 +274,6 @@
           "finish": 4
         },
         {
-          "rosterId": 6,
-          "ownerId": "1129453687258169344",
-          "teamName": "Nobie",
-          "displayName": "brownkiwi11",
-          "avatar": "8eb8f8bf999945d523f2c4033f70473e",
-          "wins": 8,
-          "losses": 6,
-          "ties": 0,
-          "pointsFor": 1600.48,
-          "pointsAgainst": 1695.94,
-          "finish": null
-        },
-        {
           "rosterId": 4,
           "ownerId": "1133895963325784064",
           "teamName": "Team Band-Aid",
@@ -297,20 +284,7 @@
           "ties": 0,
           "pointsFor": 1669.7,
           "pointsAgainst": 1541.86,
-          "finish": null
-        },
-        {
-          "rosterId": 3,
-          "ownerId": "1130395374394388480",
-          "teamName": "ikkim12",
-          "displayName": "ikkim12",
-          "avatar": "f0edbf4278f53f9425db175073df6584",
-          "wins": 6,
-          "losses": 8,
-          "ties": 0,
-          "pointsFor": 1567.84,
-          "pointsAgainst": 1585.44,
-          "finish": null
+          "finish": 5
         },
         {
           "rosterId": 10,
@@ -323,7 +297,33 @@
           "ties": 0,
           "pointsFor": 1414.82,
           "pointsAgainst": 1728.74,
-          "finish": null
+          "finish": 6
+        },
+        {
+          "rosterId": 6,
+          "ownerId": "1129453687258169344",
+          "teamName": "Nobie",
+          "displayName": "brownkiwi11",
+          "avatar": "8eb8f8bf999945d523f2c4033f70473e",
+          "wins": 8,
+          "losses": 6,
+          "ties": 0,
+          "pointsFor": 1600.48,
+          "pointsAgainst": 1695.94,
+          "finish": 7
+        },
+        {
+          "rosterId": 3,
+          "ownerId": "1130395374394388480",
+          "teamName": "ikkim12",
+          "displayName": "ikkim12",
+          "avatar": "f0edbf4278f53f9425db175073df6584",
+          "wins": 6,
+          "losses": 8,
+          "ties": 0,
+          "pointsFor": 1567.84,
+          "pointsAgainst": 1585.44,
+          "finish": 8
         },
         {
           "rosterId": 5,
@@ -336,7 +336,7 @@
           "ties": 0,
           "pointsFor": 1354.58,
           "pointsAgainst": 1664.42,
-          "finish": null
+          "finish": 9
         },
         {
           "rosterId": 7,
@@ -349,7 +349,7 @@
           "ties": 0,
           "pointsFor": 1447.08,
           "pointsAgainst": 1601.14,
-          "finish": null
+          "finish": 10
         }
       ],
       "winnersBracket": [

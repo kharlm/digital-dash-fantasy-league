@@ -2,6 +2,8 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Oswald } from "next/font/google";
 import "./globals.css";
 
+import { SiteHeader } from "@/components/site-header";
+
 // Inter for body copy, Oswald (condensed, heavy) for headlines and scores —
 // the second one is what gives the site its broadcast-graphics feel instead
 // of reading like a generic dashboard.
@@ -41,7 +43,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`h-full antialiased ${inter.variable} ${oswald.variable}`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        <SiteHeader />
+        {children}
+      </body>
     </html>
   );
 }

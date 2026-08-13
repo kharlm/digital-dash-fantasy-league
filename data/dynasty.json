@@ -60,17 +60,17 @@
           "finish": 4
         },
         {
-          "rosterId": 9,
-          "ownerId": "868173817279877120",
-          "teamName": "kharlm",
-          "displayName": "kharlm",
-          "avatar": "8eb8f8bf999945d523f2c4033f70473e",
-          "wins": 6,
-          "losses": 8,
+          "rosterId": 6,
+          "ownerId": "1134614168889393152",
+          "teamName": "JSPChen94",
+          "displayName": "JSPChen94",
+          "avatar": "bec18dd896a3c41199eb0e4e8dd853bc",
+          "wins": 5,
+          "losses": 9,
           "ties": 0,
-          "pointsFor": 1701,
-          "pointsAgainst": 1709.4,
-          "finish": null
+          "pointsFor": 1453.48,
+          "pointsAgainst": 1687.72,
+          "finish": 5
         },
         {
           "rosterId": 1,
@@ -83,7 +83,7 @@
           "ties": 0,
           "pointsFor": 1681.38,
           "pointsAgainst": 1594.08,
-          "finish": null
+          "finish": 6
         },
         {
           "rosterId": 10,
@@ -96,20 +96,20 @@
           "ties": 0,
           "pointsFor": 1581.38,
           "pointsAgainst": 1727.9,
-          "finish": null
+          "finish": 7
         },
         {
-          "rosterId": 6,
-          "ownerId": "1134614168889393152",
-          "teamName": "JSPChen94",
-          "displayName": "JSPChen94",
-          "avatar": "bec18dd896a3c41199eb0e4e8dd853bc",
-          "wins": 5,
-          "losses": 9,
+          "rosterId": 9,
+          "ownerId": "868173817279877120",
+          "teamName": "kharlm",
+          "displayName": "kharlm",
+          "avatar": "8eb8f8bf999945d523f2c4033f70473e",
+          "wins": 6,
+          "losses": 8,
           "ties": 0,
-          "pointsFor": 1453.48,
-          "pointsAgainst": 1687.72,
-          "finish": null
+          "pointsFor": 1701,
+          "pointsAgainst": 1709.4,
+          "finish": 8
         },
         {
           "rosterId": 5,
@@ -122,7 +122,7 @@
           "ties": 0,
           "pointsFor": 1442.34,
           "pointsAgainst": 1644.3,
-          "finish": null
+          "finish": 9
         },
         {
           "rosterId": 4,
@@ -135,7 +135,7 @@
           "ties": 0,
           "pointsFor": 1585.28,
           "pointsAgainst": 1783.12,
-          "finish": null
+          "finish": 10
         }
       ],
       "winnersBracket": [
@@ -284,7 +284,7 @@
           "ties": 0,
           "pointsFor": 1649.9,
           "pointsAgainst": 1762.96,
-          "finish": null
+          "finish": 5
         },
         {
           "rosterId": 5,
@@ -297,20 +297,7 @@
           "ties": 0,
           "pointsFor": 1674.78,
           "pointsAgainst": 1598.62,
-          "finish": null
-        },
-        {
-          "rosterId": 9,
-          "ownerId": "868173817279877120",
-          "teamName": "kharlm",
-          "displayName": "kharlm",
-          "avatar": "8eb8f8bf999945d523f2c4033f70473e",
-          "wins": 6,
-          "losses": 8,
-          "ties": 0,
-          "pointsFor": 1574.72,
-          "pointsAgainst": 1654.14,
-          "finish": null
+          "finish": 6
         },
         {
           "rosterId": 6,
@@ -323,7 +310,20 @@
           "ties": 0,
           "pointsFor": 1473.7,
           "pointsAgainst": 1676.26,
-          "finish": null
+          "finish": 7
+        },
+        {
+          "rosterId": 9,
+          "ownerId": "868173817279877120",
+          "teamName": "kharlm",
+          "displayName": "kharlm",
+          "avatar": "8eb8f8bf999945d523f2c4033f70473e",
+          "wins": 6,
+          "losses": 8,
+          "ties": 0,
+          "pointsFor": 1574.72,
+          "pointsAgainst": 1654.14,
+          "finish": 8
         },
         {
           "rosterId": 3,
@@ -336,7 +336,7 @@
           "ties": 0,
           "pointsFor": 1578.16,
           "pointsAgainst": 1686.18,
-          "finish": null
+          "finish": 9
         },
         {
           "rosterId": 10,
@@ -349,7 +349,7 @@
           "ties": 0,
           "pointsFor": 1358.32,
           "pointsAgainst": 1588.52,
-          "finish": null
+          "finish": 10
         }
       ],
       "winnersBracket": [

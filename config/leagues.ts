@@ -34,3 +34,14 @@ export const LEAGUES: Record<LeagueType, LeagueConfig> = {
 };
 
 export const LEAGUE_TYPES: LeagueType[] = ["dynasty", "redraft"];
+
+/**
+ * Narrows a raw `[league]` URL segment to `LeagueType`. The layout and both
+ * pages under `app/[league]/` each receive `params` independently — Next
+ * doesn't propagate the parent layout's `notFound()` as a type guard to its
+ * children — so this one check is reused in all three rather than
+ * re-implemented per file.
+ */
+export function isLeagueType(value: string): value is LeagueType {
+  return (LEAGUE_TYPES as string[]).includes(value);
+}
