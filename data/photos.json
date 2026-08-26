@@ -1,0 +1,44 @@
+[
+  {
+    "src": "/photos/photo-01.jpg",
+    "width": 1440,
+    "height": 1920,
+    "year": 2025
+  },
+  {
+    "src": "/photos/photo-02.jpg",
+    "width": 1440,
+    "height": 1920,
+    "year": 2019
+  },
+  {
+    "src": "/photos/photo-03.jpg",
+    "width": 1920,
+    "height": 1440,
+    "year": 2024
+  },
+  {
+    "src": "/photos/photo-04.jpg",
+    "width": 1920,
+    "height": 1440,
+    "year": 2025
+  },
+  {
+    "src": "/photos/photo-05.jpg",
+    "width": 1920,
+    "height": 1440,
+    "year": 2019
+  },
+  {
+    "src": "/photos/photo-06.jpg",
+    "width": 615,
+    "height": 417,
+    "year": null
+  },
+  {
+    "src": "/photos/photo-07.jpg",
+    "width": 739,
+    "height": 896,
+    "year": null
+  }
+]

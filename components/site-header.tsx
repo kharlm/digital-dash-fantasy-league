@@ -14,7 +14,15 @@ export function SiteHeader() {
           </span>
         </Link>
 
-        <LeagueSwitcher />
+        <div className="flex items-center gap-6">
+          <Link
+            href="/photos"
+            className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+          >
+            Photos
+          </Link>
+          <LeagueSwitcher />
+        </div>
       </div>
     </header>
   );

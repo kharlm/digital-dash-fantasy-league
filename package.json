@@ -9,7 +9,8 @@
     "lint": "eslint",
     "logo": "node scripts/prepare-logo.mjs",
     "snapshot": "node scripts/snapshot.ts",
-    "prebuild": "npm run snapshot"
+    "prebuild": "npm run snapshot",
+    "photos": "node scripts/prepare-photos.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
@@ -31,6 +32,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
+    "exifr": "^7.1.3",
     "sharp": "^0.35.3",
     "tailwindcss": "^4",
     "typescript": "^5"
