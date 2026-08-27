@@ -14,7 +14,7 @@ export async function SiteTicker() {
 
   const items = [
     ...newsBlurbs.map((blurb) => ({ id: blurb.id, text: blurb.text, breaking: true })),
-    ...staticItems.map((item) => ({ ...item, breaking: false })),
+    ...staticItems.map((item) => ({ ...item, breaking: item.breaking ?? false })),
   ];
   if (items.length === 0) return null;
 

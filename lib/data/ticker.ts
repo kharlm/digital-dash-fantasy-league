@@ -4,6 +4,8 @@ import { computeManagerTrends, getCompletedSeasons, getLeagueSnapshot } from "@/
 export interface TickerItem {
   id: string;
   text: string;
+  /** Gets the ticker's "Breaking" tag instead of a plain bullet — see SiteTicker. */
+  breaking?: boolean;
 }
 
 const DRAFT_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
@@ -16,13 +18,26 @@ const DRAFT_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
 });
 
 /**
+ * One-off, hand-authored announcements — unlike everything else in this
+ * file, not derived from league data, and not meant to stay forever. Remove
+ * an entry once it's stopped being news.
+ */
+const ANNOUNCEMENTS: TickerItem[] = [
+  {
+    id: "kalen-birth-announcement",
+    text: "🎉 Congrats to commissioner Rosemond and family on the arrival of baby Kalen!",
+    breaking: true,
+  },
+];
+
+/**
  * "Static content for now" per Phase 3, but built from the same real
  * snapshot data every other page reads rather than placeholder copy — so
  * this reads correctly the moment a season closes out, and Phase 7 only has
  * to append AI-written items to this list rather than replace it.
  */
 export function getTickerItems(): TickerItem[] {
-  const items: TickerItem[] = [];
+  const items: TickerItem[] = [...ANNOUNCEMENTS];
 
   for (const type of LEAGUE_TYPES) {
     const league = LEAGUES[type];

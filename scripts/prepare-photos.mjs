@@ -47,6 +47,10 @@ const SOURCE_PHOTOS = [
   // photo: a group shot with a plain wall behind it could get its edges
   // wrongly cropped by the same trim.
   { file: "683431e2-2457-4b05-a0c6-a7f5eff07f70.JPG", year: null, trim: true },
+  // Commissioner Rosemond's newborn son Kalen, born ~mid-August 2026.
+  // Appended, not inserted, so every earlier photo-NN.jpg number (and its
+  // hand-added caption) stays stable.
+  { file: "kalen-newborn.jpg", year: 2026 },
 ];
 
 /**
