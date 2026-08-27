@@ -31,6 +31,10 @@ export interface SnapshotSeason {
   losersBracket: BracketMatchResolved[];
   /** Null if the season has no draft yet (shouldn't happen once complete). */
   draft: SnapshotDraft | null;
+  /** Which platform this season's data was pulled from. Undefined means
+   *  Sleeper — only ESPN-sourced (pre-2024, redraft-only) seasons set this
+   *  explicitly, so existing Sleeper snapshot output didn't need touching. */
+  source?: "sleeper" | "espn";
   /**
    * Regular-season matchups only (weeks before playoff_week_start) — the
    * source data for head-to-head records and the record book. Playoff

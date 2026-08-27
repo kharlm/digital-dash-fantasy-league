@@ -14,7 +14,7 @@
  *
  * Run with `npm run snapshot`.
  */
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 
@@ -273,6 +273,18 @@ async function main() {
     const config = LEAGUES[type];
     const snapshot = await snapshotLeague(config);
     const outPath = join(OUT_DIR, `${type}.json`);
+
+    // This script only knows about Sleeper — the redraft league also has
+    // pre-2024 history backfilled once from ESPN (scripts/snapshot-espn.ts)
+    // and committed directly to this same file. Without this, every build's
+    // prebuild step would silently overwrite that history with a
+    // Sleeper-only rebuild, since Sleeper's own chain has no idea those
+    // seasons exist.
+    const espnSeasons: LeagueSnapshot["seasons"] = await readFile(outPath, "utf8")
+      .then((raw) => JSON.parse(raw).seasons.filter((s: { source?: string }) => s.source === "espn"))
+      .catch(() => []);
+    snapshot.seasons = [...espnSeasons, ...snapshot.seasons];
+
     await writeFile(outPath, JSON.stringify(snapshot, null, 2));
 
     const seasonSummary = snapshot.seasons
