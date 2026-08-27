@@ -3,6 +3,7 @@
 import { useQuery } from "@tanstack/react-query";
 
 import type { LiveScoresResponse } from "@/app/api/live-scores/[league]/route";
+import { ChampionReveal } from "@/components/champion-reveal";
 import type { LeagueType } from "@/config/leagues";
 
 async function fetchLiveScores(league: LeagueType): Promise<LiveScoresResponse> {
@@ -26,7 +27,12 @@ export function LiveScoreboard({ league }: { league: LeagueType }) {
     return <p className="text-fg-muted">Couldn&apos;t load live scores. Try refreshing.</p>;
   }
   if (!data.inSeason) {
-    return <p className="text-fg-muted">No games in progress — check back once the season kicks off.</p>;
+    return (
+      <div>
+        <p className="text-fg-muted">No games in progress — check back once the season kicks off.</p>
+        <ChampionReveal />
+      </div>
+    );
   }
   if (data.matchups.length === 0) {
     return <p className="text-fg-muted">No matchups found for week {data.week}.</p>;

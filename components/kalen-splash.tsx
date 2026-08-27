@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+import { CelebrationOverlay } from "@/components/celebration-overlay";
 
 const AUTO_DISMISS_MS = 6000;
 
@@ -16,40 +18,14 @@ const AUTO_DISMISS_MS = 6000;
  */
 export function KalenSplash() {
   const [visible, setVisible] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => setVisible(false), AUTO_DISMISS_MS);
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setVisible(false);
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, []);
-
   if (!visible) return null;
 
   return (
-    <div
-      role="dialog"
-      aria-label="Announcement: welcome baby Kalen"
-      onClick={() => setVisible(false)}
-      className="animate-hero-in fixed inset-0 z-50 flex cursor-pointer flex-col items-center justify-center gap-6 bg-navy-950/97 px-6 text-center backdrop-blur-sm"
+    <CelebrationOverlay
+      label="Announcement: welcome baby Kalen"
+      onDismiss={() => setVisible(false)}
+      autoDismissMs={AUTO_DISMISS_MS}
     >
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          setVisible(false);
-        }}
-        aria-label="Close"
-        className="absolute top-6 right-6 text-2xl text-fg-subtle transition-colors hover:text-fg"
-      >
-        ✕
-      </button>
-
       <div className="h-48 w-48 overflow-hidden rounded-full ring-4 ring-gold-500 drop-shadow-[0_0_40px_rgba(245,180,24,0.35)] sm:h-64 sm:w-64">
         <Image
           src="/photos/photo-08.jpg"
@@ -75,6 +51,6 @@ export function KalenSplash() {
       </div>
 
       <p className="text-xs text-fg-subtle">Tap anywhere to continue</p>
-    </div>
+    </CelebrationOverlay>
   );
 }
