@@ -6,6 +6,7 @@ import type {
   SleeperMatchup,
   SleeperPlayerMap,
   SleeperRoster,
+  SleeperState,
   SleeperTransaction,
   SleeperUser,
 } from "./types";
@@ -54,6 +55,11 @@ export function getDraftPicks(draftId: string) {
 
 export function getTransactions(leagueId: string, week: number) {
   return getJson<SleeperTransaction[]>(`/league/${leagueId}/transactions/${week}`);
+}
+
+/** Not league-scoped — tells you the current NFL week and whether the season has started. */
+export function getSleeperState() {
+  return getJson<SleeperState>("/state/nfl");
 }
 
 /**

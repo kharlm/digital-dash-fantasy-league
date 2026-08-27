@@ -146,3 +146,10 @@ export interface SleeperPlayer {
 }
 
 export type SleeperPlayerMap = Record<string, SleeperPlayer>;
+
+/** `GET /state/nfl` — not league-scoped, tells you where the season stands. */
+export interface SleeperState {
+  week: number;
+  season: string;
+  season_type: "pre" | "regular" | "post" | "off";
+}
