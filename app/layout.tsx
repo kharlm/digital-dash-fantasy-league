@@ -21,7 +21,7 @@ const oswald = Oswald({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ddfl.vercel.app"),
+  metadataBase: new URL("https://digitaldashfl.com"),
   title: {
     default: "DDFL — Digital Dash Fantasy League",
     template: "%s · DDFL",
