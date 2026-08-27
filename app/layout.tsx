@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Oswald } from "next/font/google";
 import "./globals.css";
 
+import { KalenSplash } from "@/components/kalen-splash";
 import { QueryProvider } from "@/components/query-provider";
 import { SiteHeader } from "@/components/site-header";
 import { SiteTicker } from "@/components/site-ticker";
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`h-full antialiased ${inter.variable} ${oswald.variable}`}
     >
       <body className="min-h-full flex flex-col pb-10">
+        <KalenSplash />
         <QueryProvider>
           <SiteHeader />
           {children}
