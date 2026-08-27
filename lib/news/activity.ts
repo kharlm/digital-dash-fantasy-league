@@ -1,6 +1,7 @@
 import { LEAGUE_TYPES, LEAGUES, type LeagueType } from "@/config/leagues";
 import { getAllPlayers, getMatchups, getRosters, getSleeperState, getTransactions, getUsers } from "@/lib/sleeper/client";
-import type { SleeperPlayerMap, SleeperRoster, SleeperTransaction, SleeperUser } from "@/lib/sleeper/types";
+import { teamNameFor } from "@/lib/sleeper/team-names";
+import type { SleeperPlayerMap, SleeperTransaction } from "@/lib/sleeper/types";
 
 export interface TradeEvent {
   league: LeagueType;
@@ -21,12 +22,6 @@ export interface ScoreEvent {
 export interface LeagueActivity {
   trades: TradeEvent[];
   scores: ScoreEvent[];
-}
-
-function teamNameFor(rosterId: number, rosters: SleeperRoster[], users: SleeperUser[]): string {
-  const roster = rosters.find((r) => r.roster_id === rosterId);
-  const user = roster?.owner_id ? users.find((u) => u.user_id === roster.owner_id) : undefined;
-  return user?.metadata?.team_name || user?.display_name || `Roster ${rosterId}`;
 }
 
 /**
