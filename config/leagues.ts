@@ -33,7 +33,7 @@ export const LEAGUES: Record<LeagueType, LeagueConfig> = {
   },
 };
 
-export const LEAGUE_TYPES: LeagueType[] = ["dynasty", "redraft"];
+export const LEAGUE_TYPES: LeagueType[] = ["redraft", "dynasty"];
 
 /**
  * Narrows a raw `[league]` URL segment to `LeagueType`. The layout and both
