@@ -188,8 +188,12 @@ async function buildDraft(league: EspnLeagueResponse, season: number): Promise<S
         draftSlot: p.roundPickNumber,
         rosterId: p.teamId,
         playerName: player?.fullName ?? `Player ${p.playerId}`,
-        position: player ? (ESPN_POSITION_BY_ID[player.defaultPositionId] ?? "?") : "?",
-        nflTeam: player ? (ESPN_NFL_TEAM_BY_ID[player.proTeamId] ?? "?") : "?",
+        // "—" rather than "?": mainly hits players who've since left the NFL
+        // entirely, since ESPN's player-lookup endpoint returns their
+        // *current* status, not their team from the season they were
+        // actually drafted in — an honest "unknown," not a rendering glitch.
+        position: player ? (ESPN_POSITION_BY_ID[player.defaultPositionId] ?? "—") : "—",
+        nflTeam: player ? (ESPN_NFL_TEAM_BY_ID[player.proTeamId] ?? "—") : "—",
         amount: p.bidAmount > 0 ? p.bidAmount : null,
       };
     }),

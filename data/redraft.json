@@ -413,7 +413,7 @@
             "rosterId": 9,
             "playerName": "Kareem Hunt",
             "position": "RB",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -2808,7 +2808,7 @@
             "rosterId": 7,
             "playerName": "Antonio Brown",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -5387,7 +5387,7 @@
             "rosterId": 8,
             "playerName": "Mark Ingram II",
             "position": "RB",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -5717,7 +5717,7 @@
             "rosterId": 1,
             "playerName": "Jared Cook",
             "position": "TE",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -6087,7 +6087,7 @@
             "rosterId": 10,
             "playerName": "DeSean Jackson",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -6297,7 +6297,7 @@
             "rosterId": 8,
             "playerName": "Zane Gonzalez",
             "position": "K",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -6447,7 +6447,7 @@
             "rosterId": 7,
             "playerName": "Golden Tate",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -6457,7 +6457,7 @@
             "rosterId": 5,
             "playerName": "Duke Johnson",
             "position": "RB",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -8101,7 +8101,7 @@
             "rosterId": 9,
             "playerName": "Henry Ruggs III",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -8111,7 +8111,7 @@
             "rosterId": 5,
             "playerName": "Antonio Brown",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -9670,7 +9670,7 @@
             "rosterId": 7,
             "playerName": "Leonard Fournette",
             "position": "RB",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -9810,7 +9810,7 @@
             "rosterId": 2,
             "playerName": "Ezekiel Elliott",
             "position": "RB",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -10260,7 +10260,7 @@
             "rosterId": 4,
             "playerName": "Adam Thielen",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -10460,7 +10460,7 @@
             "rosterId": 4,
             "playerName": "Robert Woods",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -10590,7 +10590,7 @@
             "rosterId": 4,
             "playerName": "Melvin Gordon III",
             "position": "RB",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -11030,7 +11030,7 @@
             "rosterId": 5,
             "playerName": "Kenny Golladay",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -11040,7 +11040,7 @@
             "rosterId": 2,
             "playerName": "Darrell Henderson Jr.",
             "position": "RB",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": null
           },
           {
@@ -12918,7 +12918,7 @@
             "rosterId": 8,
             "playerName": "Odell Beckham Jr.",
             "position": "WR",
-            "nflTeam": "?",
+            "nflTeam": "—",
             "amount": 2
           },
           {
