@@ -187,3 +187,35 @@
     animation: none;
   }
 }
+
+/*
+ * Hero's entrance fade-in, in plain CSS rather than Motion/JS. Motion's
+ * `initial={{opacity: 0}}` renders that hidden state into the server HTML
+ * itself, so the hero stayed fully invisible until the JS bundle finished
+ * downloading and hydrating — a real, visible blank-homepage flash, worse
+ * on slow connections, not a fast-refresh illusion. A CSS animation starts
+ * at first paint regardless of JS/hydration timing, so the reveal is
+ * always this short fixed duration instead of "however long hydration
+ * takes." `animation-delay` on each element reproduces the same staggered
+ * reveal Motion's `staggerChildren` gave it.
+ */
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-hero-in {
+  animation: hero-in 0.5s ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-hero-in {
+    animation: none;
+  }
+}
