@@ -16,6 +16,12 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-6">
           <Link
+            href="/announcements"
+            className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
+          >
+            Announcements
+          </Link>
+          <Link
             href="/photos"
             className="text-sm font-medium text-fg-muted transition-colors hover:text-fg"
           >
