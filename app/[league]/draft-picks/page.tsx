@@ -40,9 +40,8 @@ export default async function DraftPicksPage(props: PageProps<"/[league]/draft-p
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead className="w-20">Round</TableHead>
-                <TableHead>Original Team</TableHead>
-                <TableHead>Current Owner</TableHead>
+                <TableHead className="w-16">Round</TableHead>
+                <TableHead>Owner</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -51,13 +50,10 @@ export default async function DraftPicksPage(props: PageProps<"/[league]/draft-p
                 .map((p) => (
                   <TableRow key={`${p.season}-${p.round}-${p.originalTeam}`}>
                     <TableCell className="text-fg-subtle">{p.round}</TableCell>
-                    <TableCell className="text-fg-muted">{p.originalTeam}</TableCell>
-                    <TableCell className={p.traded ? "font-medium text-gold-400" : "text-fg"}>
-                      {p.currentOwner}
+                    <TableCell>
+                      <span className={p.traded ? "font-medium text-gold-400" : "text-fg"}>{p.currentOwner}</span>
                       {p.traded ? (
-                        <span className="ml-2 rounded bg-gold-500 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-navy-950 uppercase">
-                          Traded
-                        </span>
+                        <span className="ml-2 text-xs text-fg-subtle">from {p.originalTeam}</span>
                       ) : null}
                     </TableCell>
                   </TableRow>
