@@ -153,3 +153,19 @@ export interface SleeperState {
   season: string;
   season_type: "pre" | "regular" | "post" | "off";
 }
+
+/**
+ * `GET /league/{id}/traded_picks` — one row per pick that has EVER been
+ * traded, already resolved to its current owner (not one row per hop):
+ * confirmed against real data that (season, round, roster_id) is unique per
+ * league, so owner_id is the final holder, not an intermediate one.
+ * previous_owner_id is only the second-to-last holder, informational.
+ * Picks never mentioned here are still with their original roster_id.
+ */
+export interface SleeperTradedPick {
+  season: string;
+  round: number;
+  roster_id: number;
+  owner_id: number;
+  previous_owner_id: number;
+}

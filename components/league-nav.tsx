@@ -12,6 +12,9 @@ const TABS = [
   { segment: "history", label: "History" },
   { segment: "records", label: "Records" },
   { segment: "drafts", label: "Drafts" },
+  // Redraft has no keeper continuity, so "who owns which future pick" isn't
+  // a concept that applies there — this tab only makes sense for dynasty.
+  { segment: "draft-picks", label: "Draft Picks", leagues: ["dynasty"] },
   { segment: "brackets", label: "Brackets" },
   { segment: "head-to-head", label: "Head-to-Head" },
 ] as const;
@@ -24,11 +27,12 @@ const TABS = [
  */
 export function LeagueNav({ league }: { league: LeagueType }) {
   const activeSegment = useSelectedLayoutSegment();
+  const tabs = TABS.filter((tab) => !("leagues" in tab) || (tab.leagues as readonly string[]).includes(league));
 
   return (
     <nav className="overflow-x-auto border-b border-navy-600">
       <div className="flex w-max gap-6">
-        {TABS.map((tab) => {
+        {tabs.map((tab) => {
           const isActive = activeSegment === tab.segment;
           return (
             <Link

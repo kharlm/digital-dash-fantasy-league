@@ -7,6 +7,7 @@ import type {
   SleeperPlayerMap,
   SleeperRoster,
   SleeperState,
+  SleeperTradedPick,
   SleeperTransaction,
   SleeperUser,
 } from "./types";
@@ -55,6 +56,11 @@ export function getDraftPicks(draftId: string) {
 
 export function getTransactions(leagueId: string, week: number) {
   return getJson<SleeperTransaction[]>(`/league/${leagueId}/transactions/${week}`);
+}
+
+/** Every draft pick that's ever been traded in the league, already resolved to its current owner. */
+export function getTradedPicks(leagueId: string) {
+  return getJson<SleeperTradedPick[]>(`/league/${leagueId}/traded_picks`);
 }
 
 /** Not league-scoped — tells you the current NFL week and whether the season has started. */
