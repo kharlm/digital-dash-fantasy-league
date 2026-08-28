@@ -36,8 +36,8 @@ export default function AnnouncementsPage() {
         <ul className="space-y-4">
           {announcements.map((a) => (
             <li key={a.id} className="rounded-lg border border-navy-600 bg-navy-800 px-4 py-4">
-              <div className="flex items-center justify-between gap-3">
-                <h2 className="font-display text-lg font-semibold text-fg uppercase">{a.title}</h2>
+              <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1">
+                <h2 className="min-w-0 font-display text-lg font-semibold text-fg uppercase">{a.title}</h2>
                 {a.league ? (
                   <span className="shrink-0 rounded bg-gold-500 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-navy-950 uppercase">
                     {LEAGUES[a.league].name}
