@@ -22,13 +22,7 @@ const DRAFT_DATE_FORMAT = new Intl.DateTimeFormat("en-US", {
  * file, not derived from league data, and not meant to stay forever. Remove
  * an entry once it's stopped being news.
  */
-const ANNOUNCEMENTS: TickerItem[] = [
-  {
-    id: "kalen-birth-announcement",
-    text: "🎉 Congrats to commissioner Rosemond and family on the arrival of baby Kalen!",
-    breaking: true,
-  },
-];
+const ANNOUNCEMENTS: TickerItem[] = [];
 
 /**
  * "Static content for now" per Phase 3, but built from the same real
