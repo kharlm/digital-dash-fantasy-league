@@ -175,7 +175,9 @@
 }
 
 .ticker-track {
-  animation: ticker-scroll 45s linear infinite;
+  /* Set per render by SiteTicker from the content length, so the scroll
+     speed stays constant however many items there are. */
+  animation: ticker-scroll var(--ticker-duration, 45s) linear infinite;
 }
 
 .ticker-track:hover {

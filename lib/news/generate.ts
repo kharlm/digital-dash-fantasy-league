@@ -26,7 +26,8 @@ async function generateBlurbs(): Promise<NewsBlurb[]> {
   let activity;
   try {
     activity = await getRecentActivity();
-  } catch {
+  } catch (error) {
+    console.error("[news] fetching Sleeper activity failed:", error);
     return [];
   }
   if (activity.trades.length === 0 && activity.scores.length === 0) return [];
@@ -69,7 +70,10 @@ async function generateBlurbs(): Promise<NewsBlurb[]> {
 
     const parsed = JSON.parse(textBlock.text) as { blurbs: { kind: "trade" | "score"; text: string }[] };
     return parsed.blurbs.map((b, i) => ({ id: `news-${i}`, kind: b.kind, text: b.text }));
-  } catch {
+  } catch (error) {
+    // Still degrade to a quiet ticker, but log why — a silent [] is how
+    // production went without blurbs unnoticed.
+    console.error("[news] generating blurbs failed:", error);
     return [];
   }
 }
