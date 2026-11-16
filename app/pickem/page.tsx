@@ -97,9 +97,6 @@ async function CurrentProp({
       <h2 className="mt-3 font-display text-xl font-semibold text-fg uppercase sm:text-2xl">{p.question}</h2>
       <p className="mt-1 text-sm text-fg-muted">
         Win {formatMoney(p.payoutCents)} toward next year&apos;s auction
-        {p.type === "spread" && p.pushPayoutCents > 0
-          ? ` · Exactly on the line = everyone gets ${formatMoney(p.pushPayoutCents)}`
-          : ""}
         {p.type === "custom" ? " · Graded by the commissioner" : ""}
       </p>
 

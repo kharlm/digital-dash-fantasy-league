@@ -53,7 +53,11 @@ export type PropParams =
 
 export type PropResult = {
   winningOptions: string[]; // option keys; several on a tie
-  push: boolean; // spread landed exactly on the line
+  // A spread that lands exactly on the line: every voter wins the regular
+  // payout, whichever side they took (league decision, 2026-11-16 — it
+  // replaced a separate push amount; with 2-decimal scores it almost never
+  // happens).
+  push: boolean;
   scores?: Record<number, number>; // rosterId -> points, as graded
   note?: string; // commissioner's override reason
 };
@@ -73,7 +77,6 @@ export const prop = pgTable(
     options: jsonb("options").$type<PropOption[]>().notNull(),
     params: jsonb("params").$type<PropParams>().notNull(),
     payoutCents: integer("payout_cents").notNull(),
-    pushPayoutCents: integer("push_payout_cents").notNull().default(0),
     locksAt: timestamp("locks_at", { withTimezone: true }).notNull(),
     status: text("status", { enum: ["open", "graded", "void"] })
       .notNull()

@@ -33,8 +33,6 @@ export async function createProp(_prev: CreatePropState, formData: FormData): Pr
 
   const payoutCents = dollarsToCents(formData.get("payout"));
   if (payoutCents === null || payoutCents === 0) return { error: "Payout must be between $0.01 and $100." };
-  const pushPayoutCents = type === "spread" ? dollarsToCents(formData.get("pushPayout")) : 0;
-  if (pushPayoutCents === null) return { error: "Push payout must be between $0 and $100." };
 
   const locksAt = new Date(String(formData.get("locksAt")));
   if (Number.isNaN(locksAt.getTime())) return { error: "Set a lock time." };
@@ -95,7 +93,7 @@ export async function createProp(_prev: CreatePropState, formData: FormData): Pr
   const built = buildProp(input);
   const inserted = await db
     .insert(prop)
-    .values({ season, week, ...built, payoutCents, pushPayoutCents, locksAt, createdBy: admin.userId })
+    .values({ season, week, ...built, payoutCents, locksAt, createdBy: admin.userId })
     .onConflictDoNothing({ target: [prop.season, prop.week] })
     .returning({ id: prop.id });
   if (inserted.length === 0) return { error: `There's already a prop for week ${week}.` };

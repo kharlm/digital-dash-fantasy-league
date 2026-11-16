@@ -77,12 +77,6 @@ async function ExistingProp({ prop: p }: { prop: typeof prop.$inferSelect }) {
       <dl className="grid grid-cols-2 gap-y-1 text-sm">
         <dt className="text-fg-muted">Payout</dt>
         <dd className="text-fg">{formatMoney(p.payoutCents)}</dd>
-        {p.type === "spread" ? (
-          <>
-            <dt className="text-fg-muted">Push payout</dt>
-            <dd className="text-fg">{formatMoney(p.pushPayoutCents)} to everyone</dd>
-          </>
-        ) : null}
         <dt className="text-fg-muted">{locked ? "Locked" : "Locks"}</dt>
         <dd className="text-fg">{formatEastern(p.locksAt)}</dd>
         <dt className="text-fg-muted">Votes</dt>

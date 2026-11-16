@@ -147,21 +147,11 @@ export function CreatePropForm({ matchups, teams, defaultLockIso }: Props) {
         </>
       ) : null}
 
-      <div className="grid gap-4 sm:grid-cols-2">
-        <div>
-          <label htmlFor="payout" className={label}>
-            Payout per winner ($)
-          </label>
-          <input id="payout" name="payout" type="number" inputMode="decimal" step="0.5" min="0.5" defaultValue="1" required className={field} />
-        </div>
-        {type === "spread" ? (
-          <div>
-            <label htmlFor="pushPayout" className={label}>
-              Push payout to everyone ($)
-            </label>
-            <input id="pushPayout" name="pushPayout" type="number" inputMode="decimal" step="0.5" min="0" defaultValue="2" required className={field} />
-          </div>
-        ) : null}
+      <div>
+        <label htmlFor="payout" className={label}>
+          Payout per winner ($)
+        </label>
+        <input id="payout" name="payout" type="number" inputMode="decimal" step="0.5" min="0.5" defaultValue="1" required className={field} />
       </div>
 
       <div>
