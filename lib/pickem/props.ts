@@ -38,6 +38,11 @@ export function formatLine(line: number): string {
 
 export const teamKey = (rosterId: number) => `r${rosterId}`;
 
+/** Suggested lines go to the nearest half point, never below 0.5. */
+export function suggestLine(points: number): number {
+  return Math.max(0.5, Math.round(points * 2) / 2);
+}
+
 export function buildProp(input: PropInput): BuiltProp {
   switch (input.type) {
     case "spread": {

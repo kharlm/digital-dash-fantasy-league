@@ -4,12 +4,19 @@ import { useActionState, useState, useSyncExternalStore } from "react";
 
 import { createProp, type CreatePropState } from "@/app/pickem/admin/actions";
 import type { PropType } from "@/lib/db/schema";
-import { PROP_TYPE_LABELS } from "@/lib/pickem/props";
+import { PROP_TYPE_LABELS, suggestLine } from "@/lib/pickem/props";
 
-type Team = { rosterId: number; name: string };
+/** `projected` is Sleeper's projected total for the week, when it loaded. */
+type Team = { rosterId: number; name: string; projected: number | null };
 type Matchup = { id: number; a: Team; b: Team };
 
-type Props = { matchups: Matchup[]; teams: Team[]; defaultLockIso: string | null };
+type Props = {
+  matchups: Matchup[];
+  teams: Team[];
+  defaultLockIso: string | null;
+  /** Set when Sleeper's (unofficial) projections failed; `changed` means Kharl should look. */
+  projectionsError: { kind: "unavailable" | "changed"; reason: string } | null;
+};
 
 const field =
   "w-full rounded-lg border border-navy-600 bg-navy-900 px-3 py-2.5 text-fg placeholder:text-fg-subtle focus:border-gold-500 focus:outline-none";
@@ -24,10 +31,11 @@ function toLocalInput(iso: string): string {
 
 const subscribeNoop = () => () => {};
 
-export function CreatePropForm({ matchups, teams, defaultLockIso }: Props) {
+export function CreatePropForm({ matchups, teams, defaultLockIso, projectionsError }: Props) {
   const [state, action, pending] = useActionState<CreatePropState, FormData>(createProp, {});
   const [type, setType] = useState<PropType>("spread");
   const [matchupId, setMatchupId] = useState<number | null>(matchups[0]?.id ?? null);
+  const [teamId, setTeamId] = useState<number | null>(teams[0]?.rosterId ?? null);
   const [editedLock, setEditedLock] = useState<string | null>(null);
 
   // datetime-local needs the viewer's timezone, which only the browser knows:
@@ -36,10 +44,36 @@ export function CreatePropForm({ matchups, teams, defaultLockIso }: Props) {
   const lockLocal = editedLock ?? (inBrowser && defaultLockIso ? toLocalInput(defaultLockIso) : "");
 
   const matchup = matchups.find((m) => m.id === matchupId);
+  const totalTeam = teams.find((t) => t.rosterId === teamId);
+
+  // Suggested spread: the higher projection is the favorite, the gap is the
+  // line. Only when both sides projected; otherwise the fields start blank.
+  const spread =
+    matchup && matchup.a.projected !== null && matchup.b.projected !== null
+      ? matchup.a.projected >= matchup.b.projected
+        ? { favorite: matchup.a.rosterId, line: suggestLine(matchup.a.projected - matchup.b.projected) }
+        : { favorite: matchup.b.rosterId, line: suggestLine(matchup.b.projected - matchup.a.projected) }
+      : null;
   const lockIso = lockLocal ? new Date(lockLocal).toISOString() : "";
 
   return (
     <form action={action} className="space-y-5">
+      {projectionsError?.kind === "changed" ? (
+        <div role="alert" className="rounded-lg border border-orange-500/60 bg-orange-500/10 px-4 py-3 text-sm">
+          <p className="font-semibold text-orange-400">Sleeper changed how projections work</p>
+          <p className="mt-1 text-fg-muted">
+            Lines can&apos;t be suggested until it&apos;s fixed — check the Sleeper app and enter them yourself.
+            Please let Kharl know.
+          </p>
+          <p className="mt-2 text-xs text-fg-subtle">Details for Kharl: {projectionsError.reason}</p>
+        </div>
+      ) : projectionsError ? (
+        <p className="rounded-lg border border-navy-600 bg-navy-900 px-4 py-3 text-sm text-fg-muted">
+          Sleeper projections aren&apos;t loading right now, so lines aren&apos;t suggested. Refresh in a bit, or
+          enter them yourself.
+        </p>
+      ) : null}
+
       <div>
         <label htmlFor="type" className={label}>
           Prop type
@@ -81,13 +115,25 @@ export function CreatePropForm({ matchups, teams, defaultLockIso }: Props) {
       ) : null}
 
       {type === "spread" && matchup ? (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div key={matchup.id} className="grid gap-4 sm:grid-cols-2">
+          {spread ? (
+            <p className="text-sm text-fg-muted sm:col-span-2">
+              Sleeper projects {matchup.a.name} {matchup.a.projected?.toFixed(1)} – {matchup.b.name}{" "}
+              {matchup.b.projected?.toFixed(1)}
+            </p>
+          ) : null}
           <fieldset>
             <legend className={label}>Favorite</legend>
             <div className="space-y-2">
               {[matchup.a, matchup.b].map((t, i) => (
                 <label key={t.rosterId} className="flex items-center gap-2 text-sm text-fg">
-                  <input type="radio" name="favorite" value={t.rosterId} defaultChecked={i === 0} className="accent-gold-500" />
+                  <input
+                    type="radio"
+                    name="favorite"
+                    value={t.rosterId}
+                    defaultChecked={spread ? t.rosterId === spread.favorite : i === 0}
+                    className="accent-gold-500"
+                  />
                   {t.name}
                 </label>
               ))}
@@ -97,7 +143,18 @@ export function CreatePropForm({ matchups, teams, defaultLockIso }: Props) {
             <label htmlFor="line" className={label}>
               Line (points)
             </label>
-            <input id="line" name="line" type="number" inputMode="decimal" step="0.5" min="0.5" required placeholder="10" className={field} />
+            <input
+              id="line"
+              name="line"
+              type="number"
+              inputMode="decimal"
+              step="0.5"
+              min="0.5"
+              required
+              defaultValue={spread?.line}
+              placeholder="10"
+              className={field}
+            />
           </div>
         </div>
       ) : null}
@@ -108,7 +165,13 @@ export function CreatePropForm({ matchups, teams, defaultLockIso }: Props) {
             <label htmlFor="team" className={label}>
               Team
             </label>
-            <select id="team" name="team" className={field}>
+            <select
+              id="team"
+              name="team"
+              value={teamId ?? ""}
+              onChange={(e) => setTeamId(Number(e.target.value))}
+              className={field}
+            >
               {teams.map((t) => (
                 <option key={t.rosterId} value={t.rosterId}>
                   {t.name}
@@ -120,7 +183,22 @@ export function CreatePropForm({ matchups, teams, defaultLockIso }: Props) {
             <label htmlFor="line" className={label}>
               Line (points)
             </label>
-            <input id="line" name="line" type="number" inputMode="decimal" step="0.5" min="0.5" required placeholder="120.5" className={field} />
+            <input
+              key={teamId}
+              id="line"
+              name="line"
+              type="number"
+              inputMode="decimal"
+              step="0.5"
+              min="0.5"
+              required
+              defaultValue={totalTeam?.projected != null ? suggestLine(totalTeam.projected) : undefined}
+              placeholder="120.5"
+              className={field}
+            />
+            {totalTeam?.projected != null ? (
+              <p className="mt-1 text-xs text-fg-subtle">Sleeper projects {totalTeam.projected.toFixed(1)}</p>
+            ) : null}
           </div>
         </div>
       ) : null}

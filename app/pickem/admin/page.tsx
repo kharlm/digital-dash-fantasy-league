@@ -9,6 +9,7 @@ import { prop, vote } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/dal";
 import { formatEastern, formatMoney } from "@/lib/pickem/format";
 import { getRedraftMatchups, getRedraftTeams } from "@/lib/pickem/matchups";
+import { getProjectedTotals } from "@/lib/pickem/projections";
 import { getPickemWeek } from "@/lib/pickem/schedule";
 
 export const metadata: Metadata = { title: "Pick'em admin", robots: { index: false } };
@@ -37,27 +38,44 @@ export default async function PickemAdminPage() {
       {existing ? (
         <ExistingProp prop={existing} />
       ) : (
-        <NewPropForm week={week} firstKickoff={firstKickoff} />
+        <NewPropForm season={season} week={week} firstKickoff={firstKickoff} />
       )}
     </div>
   );
 }
 
-async function NewPropForm({ week, firstKickoff }: { week: number; firstKickoff: Date | null }) {
-  const [matchups, teams] = await Promise.all([getRedraftMatchups(week), getRedraftTeams()]);
+async function NewPropForm({
+  season,
+  week,
+  firstKickoff,
+}: {
+  season: number;
+  week: number;
+  firstKickoff: Date | null;
+}) {
+  const [matchups, teams, projected] = await Promise.all([
+    getRedraftMatchups(week),
+    getRedraftTeams(),
+    getProjectedTotals(season, week),
+  ]);
   const defaultLock = firstKickoff ? new Date(firstKickoff.getTime() - LOCK_BEFORE_KICKOFF_MS) : null;
+  const team = (rosterId: number, name: string) => {
+    const points = projected.ok ? projected.totals.get(rosterId) : undefined;
+    return { rosterId, name, projected: points === undefined ? null : Math.round(points * 10) / 10 };
+  };
 
   return (
     <CreatePropForm
       matchups={matchups.map((m) => ({
         id: m.matchupId,
-        a: { rosterId: m.a.rosterId, name: m.a.teamName },
-        b: { rosterId: m.b.rosterId, name: m.b.teamName },
+        a: team(m.a.rosterId, m.a.teamName),
+        b: team(m.b.rosterId, m.b.teamName),
       }))}
       teams={[...teams.values()]
-        .map((t) => ({ rosterId: t.rosterId, name: t.teamName }))
+        .map((t) => team(t.rosterId, t.teamName))
         .sort((x, y) => x.name.localeCompare(y.name))}
       defaultLockIso={defaultLock?.toISOString() ?? null}
+      projectionsError={projected.ok ? null : { kind: projected.kind, reason: projected.reason }}
     />
   );
 }
