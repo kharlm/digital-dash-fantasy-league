@@ -1,7 +1,7 @@
 "use server";
 
 import { and, eq } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 
 import { db } from "@/lib/db";
 import { prop, type PropType } from "@/lib/db/schema";
@@ -100,8 +100,7 @@ export async function createProp(_prev: CreatePropState, formData: FormData): Pr
     .returning({ id: prop.id });
   if (inserted.length === 0) return { error: `There's already a prop for week ${week}.` };
 
-  revalidatePath("/pickem");
-  revalidatePath("/pickem/admin");
+  refresh();
   return { created: true };
 }
 
@@ -114,7 +113,6 @@ export async function deleteOpenProp(propId: number) {
     return { error: "Voting has locked — this prop can't be deleted anymore." };
   }
   await db.delete(prop).where(and(eq(prop.id, propId), eq(prop.status, "open")));
-  revalidatePath("/pickem");
-  revalidatePath("/pickem/admin");
+  refresh();
   return {};
 }

@@ -1,11 +1,11 @@
 "use server";
 
 import { and, eq, isNull } from "drizzle-orm";
-import { revalidatePath } from "next/cache";
+import { refresh } from "next/cache";
 import { redirect } from "next/navigation";
 
 import { db } from "@/lib/db";
-import { manager } from "@/lib/db/schema";
+import { manager, prop, vote } from "@/lib/db/schema";
 import { requireManager, requireViewer } from "@/lib/dal";
 import { normalizeUsPhone } from "@/lib/phone";
 
@@ -45,6 +45,31 @@ export async function updatePhone(
     .update(manager)
     .set({ phone })
     .where(eq(manager.sleeperUserId, viewer.manager.sleeperUserId));
-  revalidatePath("/pickem/settings");
+  refresh();
   return { saved: true };
+}
+
+export type VoteResult = { error?: string };
+
+/**
+ * Casts or changes the viewer's pick. Lock is enforced here, server-side,
+ * against the prop's stored locks_at — the disabled buttons on a locked prop
+ * are only a convenience, a stale tab can still submit.
+ */
+export async function castVote(propId: number, option: string): Promise<VoteResult> {
+  const viewer = await requireManager("/pickem");
+  const [p] = await db.select().from(prop).where(eq(prop.id, propId));
+  if (!p) return { error: "That prop no longer exists." };
+  if (p.status !== "open" || p.locksAt <= new Date()) return { error: "Voting is locked." };
+  if (!p.options.some((o) => o.key === option)) return { error: "That isn't one of the options." };
+
+  await db
+    .insert(vote)
+    .values({ propId, managerId: viewer.manager.sleeperUserId, option })
+    .onConflictDoUpdate({
+      target: [vote.propId, vote.managerId],
+      set: { option, updatedAt: new Date() },
+    });
+  refresh();
+  return {};
 }

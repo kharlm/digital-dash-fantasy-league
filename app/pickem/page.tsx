@@ -1,20 +1,28 @@
+import { asc, desc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import { SignOutButton } from "@/components/pickem/sign-out-button";
+import { VotePanel } from "@/components/pickem/vote-panel";
 import { redraftTeamNames } from "@/lib/data/pickem-teams";
+import { db } from "@/lib/db";
+import { manager, prop, vote } from "@/lib/db/schema";
 import { requireManager } from "@/lib/dal";
+import { formatEastern, formatMoney } from "@/lib/pickem/format";
 
 export const metadata: Metadata = {
   title: "Pick'em",
   description: "Weekly Pick'em — vote on the commissioner's line, win auction dollars.",
 };
 
-// Phase 1 placeholder: proves the sign-in -> claim -> signed-in loop end to
-// end. The weekly prop and voting land here in Phase 2.
 export default async function PickemPage() {
   const viewer = await requireManager("/pickem");
   const teamName = redraftTeamNames().get(viewer.manager.sleeperUserId);
+  const isAdmin = viewer.manager.role === "admin";
+
+  // The newest prop is "this week's": open until it locks, then it stays up
+  // (locked, later graded) until the commissioner posts the next one.
+  const [current] = await db.select().from(prop).orderBy(desc(prop.season), desc(prop.week)).limit(1);
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-8">
@@ -24,7 +32,7 @@ export default async function PickemPage() {
           <p className="text-fg-muted">
             Signed in as <span className="text-fg">{viewer.manager.name}</span>
             {teamName ? ` · ${teamName}` : null}
-            {viewer.manager.role === "admin" ? (
+            {isAdmin ? (
               <span className="ml-2 rounded bg-gold-500 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-navy-950 uppercase">
                 Admin
               </span>
@@ -32,7 +40,7 @@ export default async function PickemPage() {
           </p>
         </div>
         <div className="flex items-center gap-4 text-sm">
-          {viewer.manager.role === "admin" ? (
+          {isAdmin ? (
             <Link href="/pickem/admin" className="font-medium text-gold-400 hover:text-gold-300">
               Admin
             </Link>
@@ -44,10 +52,77 @@ export default async function PickemPage() {
         </div>
       </div>
 
-      <div className="rounded-lg border border-navy-600 bg-navy-800 px-4 py-8 text-center">
-        <p className="font-display text-lg font-semibold text-fg uppercase">No prop posted yet</p>
-        <p className="mt-1 text-sm text-fg-muted">This week&apos;s line will show up here once it&apos;s set.</p>
-      </div>
+      {current ? (
+        <CurrentProp prop={current} viewerManagerId={viewer.manager.sleeperUserId} />
+      ) : (
+        <div className="rounded-lg border border-navy-600 bg-navy-800 px-4 py-8 text-center">
+          <p className="font-display text-lg font-semibold text-fg uppercase">No prop posted yet</p>
+          <p className="mt-1 text-sm text-fg-muted">This week&apos;s line will show up here once it&apos;s set.</p>
+        </div>
+      )}
     </div>
+  );
+}
+
+async function CurrentProp({
+  prop: p,
+  viewerManagerId,
+}: {
+  prop: typeof prop.$inferSelect;
+  viewerManagerId: string;
+}) {
+  const [votes, managers] = await Promise.all([
+    db
+      .select({ managerId: vote.managerId, option: vote.option, name: manager.name })
+      .from(vote)
+      .innerJoin(manager, eq(vote.managerId, manager.sleeperUserId))
+      .where(eq(vote.propId, p.id))
+      .orderBy(asc(vote.updatedAt)),
+    db.select({ id: manager.sleeperUserId, name: manager.name }).from(manager).orderBy(asc(manager.name)),
+  ]);
+
+  const locked = p.status !== "open" || p.locksAt <= new Date();
+  const voted = new Set(votes.map((v) => v.managerId));
+
+  return (
+    <section className="rounded-lg border border-navy-600 bg-navy-800 px-4 py-5 sm:px-6">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <span className="rounded bg-orange-500 px-1.5 py-0.5 text-[10px] font-bold tracking-wide text-navy-950 uppercase">
+          Week {p.week}
+        </span>
+        <span className="text-xs text-fg-subtle">
+          {locked ? "Locked" : "Locks"} {formatEastern(p.locksAt)}
+        </span>
+      </div>
+      <h2 className="mt-3 font-display text-xl font-semibold text-fg uppercase sm:text-2xl">{p.question}</h2>
+      <p className="mt-1 text-sm text-fg-muted">
+        Win {formatMoney(p.payoutCents)} toward next year&apos;s auction
+        {p.type === "spread" && p.pushPayoutCents > 0
+          ? ` · Exactly on the line = everyone gets ${formatMoney(p.pushPayoutCents)}`
+          : ""}
+        {p.type === "custom" ? " · Graded by the commissioner" : ""}
+      </p>
+
+      <VotePanel
+        propId={p.id}
+        locked={locked}
+        myVote={votes.find((v) => v.managerId === viewerManagerId)?.option ?? null}
+        options={p.options.map((o) => ({
+          key: o.key,
+          label: o.label,
+          voters: votes.filter((v) => v.option === o.key).map((v) => v.name),
+        }))}
+      />
+
+      <p className="mt-5 text-xs text-fg-subtle">
+        {voted.size} of {managers.length} voted
+        {voted.size < managers.length
+          ? ` · ${locked ? "Missed it" : "Still waiting on"}: ${managers
+              .filter((m) => !voted.has(m.id))
+              .map((m) => m.name)
+              .join(", ")}`
+          : ""}
+      </p>
+    </section>
   );
 }
