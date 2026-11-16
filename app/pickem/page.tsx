@@ -32,6 +32,11 @@ export default async function PickemPage() {
           </p>
         </div>
         <div className="flex items-center gap-4 text-sm">
+          {viewer.manager.role === "admin" ? (
+            <Link href="/pickem/admin" className="font-medium text-gold-400 hover:text-gold-300">
+              Admin
+            </Link>
+          ) : null}
           <Link href="/pickem/settings" className="text-fg-muted hover:text-fg">
             Settings
           </Link>
