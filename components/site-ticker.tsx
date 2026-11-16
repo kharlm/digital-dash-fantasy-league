@@ -15,7 +15,7 @@ const APPROX_CHAR_PX = 7;
 const BULLET_PX = 8 + 8;
 const BREAKING_BADGE_PX = 64 + 8;
 const ITEM_GAP_PX = 40;
-const SCROLL_PX_PER_SECOND = 60;
+const SCROLL_PX_PER_SECOND = 80;
 const MIN_LOOP_SECONDS = 20;
 
 export async function SiteTicker() {
