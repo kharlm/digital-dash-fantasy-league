@@ -17,8 +17,27 @@ import { getMatchups } from "@/lib/sleeper/client";
  *    (gone, now refused, or answering in a new shape). Kharl needs to know.
  */
 
-/** Thrown when Sleeper answered, but not the way this code expects. */
-class SleeperChangedError extends Error {}
+/**
+ * Thrown when Sleeper answered, but not the way this code expects. `summary`
+ * is plain English for the commissioner to pass along; `message` is the
+ * technical detail Kharl needs to fix it.
+ */
+class SleeperChangedError extends Error {
+  constructor(
+    readonly summary: string,
+    technical: string,
+  ) {
+    super(technical);
+  }
+}
+
+const STATUS_SUMMARIES: Record<number, string> = {
+  400: "Sleeper started rejecting the way we ask for projections.",
+  401: "Sleeper now requires a login to get projections.",
+  403: "Sleeper is now blocking us from getting projections.",
+  404: "Sleeper's projections address no longer exists — they probably moved it.",
+  410: "Sleeper's projections address no longer exists — they probably moved it.",
+};
 
 // Statuses that mean "this request is no longer valid here", as opposed to
 // a server hiccup (5xx) or being rate limited (429).
@@ -27,14 +46,19 @@ const CHANGED_STATUSES = new Set([400, 401, 403, 404, 410]);
 function checkStatus(res: Response, what: string) {
   if (res.ok) return;
   const message = `Sleeper ${what} -> HTTP ${res.status}`;
-  throw CHANGED_STATUSES.has(res.status) ? new SleeperChangedError(message) : new Error(message);
+  throw CHANGED_STATUSES.has(res.status)
+    ? new SleeperChangedError(STATUS_SUMMARIES[res.status], message)
+    : new Error(message);
 }
 
 async function readJson(res: Response, what: string): Promise<unknown> {
   try {
     return await res.json();
   } catch {
-    throw new SleeperChangedError(`Sleeper ${what} didn't return JSON`);
+    throw new SleeperChangedError(
+      "Sleeper sent back something that isn't data anymore.",
+      `Sleeper ${what} didn't return JSON`,
+    );
   }
 }
 
@@ -49,7 +73,12 @@ async function getLeagueScoring(): Promise<Record<string, number>> {
   });
   checkStatus(res, "league");
   const league = (await readJson(res, "league")) as { scoring_settings?: Record<string, number> };
-  if (!league.scoring_settings) throw new SleeperChangedError("Sleeper league has no scoring_settings");
+  if (!league.scoring_settings) {
+    throw new SleeperChangedError(
+      "Sleeper stopped including the league's scoring settings.",
+      "Sleeper league response has no scoring_settings",
+    );
+  }
   return league.scoring_settings;
 }
 
@@ -62,10 +91,15 @@ async function getProjections(season: number, week: number): Promise<Map<string,
   });
   checkStatus(res, "projections");
   const rows = await readJson(res, "projections");
-  if (!Array.isArray(rows)) throw new SleeperChangedError("Sleeper projections aren't a list anymore");
+  if (!Array.isArray(rows)) {
+    throw new SleeperChangedError("Sleeper changed the format of its projections.", "projections response isn't an array");
+  }
   const withStats = (rows as Projection[]).filter((r) => r.player_id && r.stats);
   if (rows.length > 0 && withStats.length === 0) {
-    throw new SleeperChangedError("Sleeper projections no longer include player stats");
+    throw new SleeperChangedError(
+      "Sleeper changed the format of its projections.",
+      "projections rows no longer have player_id + stats",
+    );
   }
   return new Map(withStats.map((r) => [r.player_id, r.stats!]));
 }
@@ -81,7 +115,8 @@ function score(stats: Record<string, number>, scoring: Record<string, number>): 
 
 export type ProjectedTotals =
   | { ok: true; totals: Map<number, number> }
-  | { ok: false; kind: "unavailable" | "changed"; reason: string };
+  | { ok: false; kind: "unavailable"; reason: string }
+  | { ok: false; kind: "changed"; summary: string; reason: string };
 
 const TIMEOUT_MS = 5000;
 
@@ -112,12 +147,19 @@ export async function getProjectedTotals(season: number, week: number): Promise<
     // An unofficial endpoint is more likely to change shape than to error
     // outright — answering 200 with nothing usable. All-zero totals is that.
     if (totals.size === 0 || [...totals.values()].every((points) => points === 0)) {
-      throw new SleeperChangedError("Sleeper answered, but every team projects to 0 — the format may have changed");
+      throw new SleeperChangedError(
+        "Projections loaded, but every team came out to 0 points — Sleeper probably changed the format.",
+        "every roster's projected total is 0",
+      );
     }
     return { ok: true, totals };
   } catch (error) {
-    const kind = error instanceof SleeperChangedError ? "changed" : "unavailable";
-    console.error(`[pickem] projected totals ${kind}:`, error);
-    return { ok: false, kind, reason: error instanceof Error ? error.message : String(error) };
+    const reason = error instanceof Error ? error.message : String(error);
+    if (error instanceof SleeperChangedError) {
+      console.error("[pickem] Sleeper projections changed:", error);
+      return { ok: false, kind: "changed", summary: error.summary, reason };
+    }
+    console.error("[pickem] Sleeper projections unavailable:", error);
+    return { ok: false, kind: "unavailable", reason };
   }
 }

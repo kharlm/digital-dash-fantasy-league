@@ -4,6 +4,7 @@ import { useActionState, useState, useSyncExternalStore } from "react";
 
 import { createProp, type CreatePropState } from "@/app/pickem/admin/actions";
 import type { PropType } from "@/lib/db/schema";
+import { ProjectionsWarning, type ProjectionsProblem } from "@/components/pickem/projections-warning";
 import { PROP_TYPE_LABELS, suggestLine } from "@/lib/pickem/props";
 
 /** `projected` is Sleeper's projected total for the week, when it loaded. */
@@ -14,8 +15,8 @@ type Props = {
   matchups: Matchup[];
   teams: Team[];
   defaultLockIso: string | null;
-  /** Set when Sleeper's (unofficial) projections failed; `changed` means Kharl should look. */
-  projectionsError: { kind: "unavailable" | "changed"; reason: string } | null;
+  /** Set when Sleeper's (unofficial) projections failed. */
+  projectionsProblem: ProjectionsProblem | null;
 };
 
 const field =
@@ -31,7 +32,7 @@ function toLocalInput(iso: string): string {
 
 const subscribeNoop = () => () => {};
 
-export function CreatePropForm({ matchups, teams, defaultLockIso, projectionsError }: Props) {
+export function CreatePropForm({ matchups, teams, defaultLockIso, projectionsProblem }: Props) {
   const [state, action, pending] = useActionState<CreatePropState, FormData>(createProp, {});
   const [type, setType] = useState<PropType>("spread");
   const [matchupId, setMatchupId] = useState<number | null>(matchups[0]?.id ?? null);
@@ -58,21 +59,7 @@ export function CreatePropForm({ matchups, teams, defaultLockIso, projectionsErr
 
   return (
     <form action={action} className="space-y-5">
-      {projectionsError?.kind === "changed" ? (
-        <div role="alert" className="rounded-lg border border-orange-500/60 bg-orange-500/10 px-4 py-3 text-sm">
-          <p className="font-semibold text-orange-400">Sleeper changed how projections work</p>
-          <p className="mt-1 text-fg-muted">
-            Lines can&apos;t be suggested until it&apos;s fixed — check the Sleeper app and enter them yourself.
-            Please let Kharl know.
-          </p>
-          <p className="mt-2 text-xs text-fg-subtle">Details for Kharl: {projectionsError.reason}</p>
-        </div>
-      ) : projectionsError ? (
-        <p className="rounded-lg border border-navy-600 bg-navy-900 px-4 py-3 text-sm text-fg-muted">
-          Sleeper projections aren&apos;t loading right now, so lines aren&apos;t suggested. Refresh in a bit, or
-          enter them yourself.
-        </p>
-      ) : null}
+      {projectionsProblem ? <ProjectionsWarning problem={projectionsProblem} /> : null}
 
       <div>
         <label htmlFor="type" className={label}>

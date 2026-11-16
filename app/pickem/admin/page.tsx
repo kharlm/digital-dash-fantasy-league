@@ -9,15 +9,33 @@ import { prop, vote } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/dal";
 import { formatEastern, formatMoney } from "@/lib/pickem/format";
 import { getRedraftMatchups, getRedraftTeams } from "@/lib/pickem/matchups";
-import { getProjectedTotals } from "@/lib/pickem/projections";
+import { getProjectedTotals, type ProjectedTotals } from "@/lib/pickem/projections";
 import { getPickemWeek } from "@/lib/pickem/schedule";
 
 export const metadata: Metadata = { title: "Pick'em admin", robots: { index: false } };
 
 const LOCK_BEFORE_KICKOFF_MS = 5 * 60 * 1000;
 
-export default async function PickemAdminPage() {
+/**
+ * Local-dev-only previews of the projections warnings, so they can be seen
+ * without breaking anything: /pickem/admin?simulate=projections-changed (or
+ * projections-unavailable). Ignored in production.
+ */
+const SIMULATED: Record<string, ProjectedTotals> = {
+  "projections-changed": {
+    ok: false,
+    kind: "changed",
+    summary: "Sleeper's projections address no longer exists — they probably moved it.",
+    reason: "Sleeper projections -> HTTP 404 (simulated)",
+  },
+  "projections-unavailable": { ok: false, kind: "unavailable", reason: "timed out after 5s (simulated)" },
+};
+
+export default async function PickemAdminPage({ searchParams }: PageProps<"/pickem/admin">) {
   await requireAdmin();
+  const { simulate } = await searchParams;
+  const simulated =
+    process.env.NODE_ENV !== "production" && typeof simulate === "string" ? SIMULATED[simulate] : undefined;
   const { season, week, firstKickoff } = await getPickemWeek();
 
   const [existing] = await db
@@ -38,7 +56,7 @@ export default async function PickemAdminPage() {
       {existing ? (
         <ExistingProp prop={existing} />
       ) : (
-        <NewPropForm season={season} week={week} firstKickoff={firstKickoff} />
+        <NewPropForm season={season} week={week} firstKickoff={firstKickoff} simulated={simulated} />
       )}
     </div>
   );
@@ -48,15 +66,17 @@ async function NewPropForm({
   season,
   week,
   firstKickoff,
+  simulated,
 }: {
   season: number;
   week: number;
   firstKickoff: Date | null;
+  simulated?: ProjectedTotals;
 }) {
   const [matchups, teams, projected] = await Promise.all([
     getRedraftMatchups(week),
     getRedraftTeams(),
-    getProjectedTotals(season, week),
+    simulated ?? getProjectedTotals(season, week),
   ]);
   const defaultLock = firstKickoff ? new Date(firstKickoff.getTime() - LOCK_BEFORE_KICKOFF_MS) : null;
   const team = (rosterId: number, name: string) => {
@@ -75,7 +95,13 @@ async function NewPropForm({
         .map((t) => team(t.rosterId, t.teamName))
         .sort((x, y) => x.name.localeCompare(y.name))}
       defaultLockIso={defaultLock?.toISOString() ?? null}
-      projectionsError={projected.ok ? null : { kind: projected.kind, reason: projected.reason }}
+      projectionsProblem={
+        projected.ok
+          ? null
+          : projected.kind === "changed"
+            ? { kind: "changed", summary: projected.summary, reason: projected.reason, week }
+            : { kind: "unavailable" }
+      }
     />
   );
 }
