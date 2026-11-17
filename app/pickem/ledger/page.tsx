@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import type { CSSProperties } from "react";
 import Link from "next/link";
 
 import { requireManager } from "@/lib/dal";
 import { formatMoney } from "@/lib/pickem/format";
-import { getCapTable, getHistory } from "@/lib/pickem/ledger";
+import { BASE_CAP_CENTS, getCapTable, getHistory } from "@/lib/pickem/ledger";
 
 export const metadata: Metadata = {
   title: "Auction caps",
@@ -45,8 +46,10 @@ export default async function LedgerPage() {
             </tr>
           </thead>
           <tbody>
-            {table.map((r) => {
+            {table.map((r, i) => {
               const me = r.managerId === viewer.manager.sleeperUserId;
+              // Rows animate in one after another, top down.
+              const delay = `${i * 70}ms`;
               return (
                 <tr key={r.managerId} className={`border-b border-navy-600/50 last:border-0 ${me ? "bg-gold-500/5" : ""}`}>
                   <td className="py-3 pl-4 text-fg-subtle tabular-nums">{r.rank}</td>
@@ -55,19 +58,21 @@ export default async function LedgerPage() {
                     {/* Bars show winnings from $0 — the part that differs.
                         The cap column carries the full figure. */}
                     <div className="flex items-center gap-2" title={`${r.name}: ${formatMoney(r.winningsCents)} won`}>
-                      <div className="h-2 flex-1 max-w-40">
+                      <div className="h-3 flex-1">
                         {r.winningsCents > 0 ? (
                           <div
-                            className="h-2 rounded-r bg-gold-600"
-                            style={{ width: `${(r.winningsCents / maxWinnings) * 100}%` }}
+                            className="bar-grow h-3 rounded-r bg-gold-600"
+                            style={{ width: `${(r.winningsCents / maxWinnings) * 100}%`, animationDelay: delay }}
                           />
                         ) : null}
                       </div>
-                      <span className="w-12 text-fg-muted tabular-nums">+{formatMoney(r.winningsCents)}</span>
+                      <span className="w-12 text-fg-muted tabular-nums">
+                        <CountUp cents={r.winningsCents} prefix="+$" delay={delay} />
+                      </span>
                     </div>
                   </td>
                   <td className="py-3 pr-4 text-right font-display text-base font-semibold text-fg tabular-nums">
-                    {formatMoney(r.capCents)}
+                    <CountUp cents={r.capCents} fromCents={BASE_CAP_CENTS} delay={delay} />
                   </td>
                 </tr>
               );
@@ -109,5 +114,33 @@ export default async function LedgerPage() {
         </ul>
       )}
     </div>
+  );
+}
+
+/**
+ * A dollar figure that counts up from `fromCents` on load (CSS only — see
+ * .count-up in globals.css). Screen readers get the plain figure. Amounts
+ * with cents (a $0.50 payout) aren't whole numbers the counter can print,
+ * so those just show as-is.
+ */
+function CountUp({ cents, fromCents = 0, prefix = "$", delay }: { cents: number; fromCents?: number; prefix?: string; delay: string }) {
+  const text = `${prefix === "+$" ? "+" : ""}${formatMoney(cents)}`;
+  if (cents % 100 !== 0 || fromCents % 100 !== 0) return text;
+  return (
+    <>
+      <span className="sr-only">{text}</span>
+      <span
+        aria-hidden
+        className="count-up"
+        style={
+          {
+            "--n": cents / 100,
+            "--from": fromCents / 100,
+            "--prefix": `"${prefix}"`,
+            animationDelay: delay,
+          } as CSSProperties
+        }
+      />
+    </>
   );
 }
