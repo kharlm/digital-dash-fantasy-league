@@ -118,7 +118,7 @@ export type ProjectedTotals =
   | { ok: false; kind: "unavailable"; reason: string }
   | { ok: false; kind: "changed"; summary: string; reason: string };
 
-const TIMEOUT_MS = 5000;
+export const TIMEOUT_MS = 5000;
 
 /**
  * roster_id -> projected points for the week's current starting lineups.
@@ -126,10 +126,13 @@ const TIMEOUT_MS = 5000;
  * warning so the commissioner enters lines by hand (and tells Kharl).
  */
 export async function getProjectedTotals(season: number, week: number): Promise<ProjectedTotals> {
+  // Cleared in `finally`: a timer left running would reject later with no
+  // one listening — an unhandled rejection, which can take the process down.
+  let timer: ReturnType<typeof setTimeout> | undefined;
   try {
-    const timeout = new Promise<never>((_, reject) =>
-      setTimeout(() => reject(new Error(`timed out after ${TIMEOUT_MS / 1000}s`)), TIMEOUT_MS),
-    );
+    const timeout = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => reject(new Error(`timed out after ${TIMEOUT_MS / 1000}s`)), TIMEOUT_MS);
+    });
     const [matchups, projections, scoring] = await Promise.race([
       Promise.all([getMatchups(LEAGUES.redraft.leagueId, week), getProjections(season, week), getLeagueScoring()]),
       timeout,
@@ -161,5 +164,7 @@ export async function getProjectedTotals(season: number, week: number): Promise<
     }
     console.error("[pickem] Sleeper projections unavailable:", error);
     return { ok: false, kind: "unavailable", reason };
+  } finally {
+    clearTimeout(timer);
   }
 }
