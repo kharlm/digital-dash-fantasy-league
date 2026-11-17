@@ -6,10 +6,11 @@ import { SignOutButton } from "@/components/pickem/sign-out-button";
 import { VotePanel } from "@/components/pickem/vote-panel";
 import { redraftTeamNames } from "@/lib/data/pickem-teams";
 import { db } from "@/lib/db";
-import { manager, prop, vote, type PropParams } from "@/lib/db/schema";
+import { manager, prop, vote } from "@/lib/db/schema";
 import { requireManager } from "@/lib/dal";
 import { formatEastern, formatMoney } from "@/lib/pickem/format";
 import { getRedraftTeams } from "@/lib/pickem/matchups";
+import { leagueTotal, scoreOrder } from "@/lib/pickem/results";
 import { getPickemWeek } from "@/lib/pickem/schedule";
 
 export const metadata: Metadata = {
@@ -185,24 +186,4 @@ async function CurrentProp({
       </p>
     </section>
   );
-}
-
-/** Summed in hundredths, the same way grading does, so the shown total matches the result. */
-function leagueTotal(scores: Record<number, number>): number {
-  return Object.values(scores).reduce((sum, pts) => sum + Math.round(pts * 100), 0) / 100;
-}
-
-/**
- * Final scores in the order the prop reads — favorite first for a spread,
- * team A first straight up. (The stored scores object can't keep that order:
- * JS sorts integer keys numerically, i.e. by Sleeper roster id.)
- */
-function scoreOrder(params: PropParams, scores: Record<number, number>): [number, number][] {
-  const order =
-    "favoriteRosterId" in params
-      ? [params.favoriteRosterId, params.underdogRosterId]
-      : "rosterIdA" in params
-        ? [params.rosterIdA, params.rosterIdB]
-        : Object.keys(scores).map(Number);
-  return order.filter((id) => id in scores).map((id) => [id, scores[id]]);
 }

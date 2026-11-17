@@ -5,6 +5,7 @@ import Link from "next/link";
 import { CreatePropForm } from "@/components/pickem/create-prop-form";
 import { DeletePropButton } from "@/components/pickem/delete-prop-button";
 import { GradeControls } from "@/components/pickem/grade-controls";
+import { SharePost } from "@/components/pickem/share-post";
 import { db } from "@/lib/db";
 import { prop, vote } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/dal";
@@ -140,6 +141,7 @@ async function ExistingProp({ prop: p }: { prop: typeof prop.$inferSelect }) {
         <dt className="text-fg-muted">Votes</dt>
         <dd className="text-fg">{votes} of 10</dd>
       </dl>
+      {!locked && p.status === "open" ? <SharePost propId={p.id} kind="announcement" /> : null}
       {!locked && p.status === "open" ? <DeletePropButton propId={p.id} votes={votes} /> : null}
     </div>
   );
@@ -170,6 +172,7 @@ function Results({ prop: p }: { prop: typeof prop.$inferSelect }) {
       <p className="text-sm text-fg-muted">{status}</p>
       {p.result?.note ? <p className="text-xs text-fg-subtle">Note: {p.result.note}</p> : null}
       <GradeControls propId={p.id} graded={graded} options={p.options} />
+      {graded ? <SharePost propId={p.id} kind="recap" /> : null}
     </section>
   );
 }

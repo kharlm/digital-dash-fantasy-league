@@ -10,6 +10,7 @@ import { getRedraftMatchups, getRedraftTeams } from "@/lib/pickem/matchups";
 import { buildProp, type PropInput } from "@/lib/pickem/props";
 import { gradeFromScores, gradeManually } from "@/lib/pickem/grade";
 import { getPickemWeek } from "@/lib/pickem/schedule";
+import { draftAnnouncement, draftRecap } from "@/lib/pickem/share";
 
 export type CreatePropState = { error?: string; created?: boolean };
 
@@ -151,4 +152,20 @@ export async function gradeByHand(propId: number, winningOptions: string[], note
   return outcome.status === "graded"
     ? { message: "Result saved — winners have been paid." }
     : { error: outcome.status === "skipped" ? outcome.reason : "Couldn't grade that." };
+}
+
+export type SharePostState = { text?: string; error?: string };
+
+/** Writes the WhatsApp post for a prop: the announcement while it's open, the recap once graded. */
+export async function draftSharePost(propId: number, kind: "announcement" | "recap"): Promise<SharePostState> {
+  await requireAdmin();
+  const p = await loadProp(propId);
+  if (!p) return { error: "That prop no longer exists." };
+  if (kind === "recap" && p.status !== "graded") return { error: "The recap is ready once this week is graded." };
+  try {
+    return { text: kind === "recap" ? await draftRecap(p) : await draftAnnouncement(p) };
+  } catch (error) {
+    console.error("[pickem] drafting share post failed:", error);
+    return { error: "Couldn't put the post together — try again in a minute." };
+  }
 }
