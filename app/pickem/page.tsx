@@ -9,6 +9,7 @@ import { db } from "@/lib/db";
 import { manager, prop, vote } from "@/lib/db/schema";
 import { requireManager } from "@/lib/dal";
 import { formatEastern, formatMoney } from "@/lib/pickem/format";
+import { getPickemWeek } from "@/lib/pickem/schedule";
 
 export const metadata: Metadata = {
   title: "Pick'em",
@@ -23,6 +24,17 @@ export default async function PickemPage() {
   // The newest prop is "this week's": open until it locks, then it stays up
   // (locked, later graded) until the commissioner posts the next one.
   const [current] = await db.select().from(prop).orderBy(desc(prop.season), desc(prop.week)).limit(1);
+
+  // Admins land here first, so when the upcoming week has no prop yet they
+  // get a direct button to set it — whether the page is empty or still
+  // showing last week's locked prop. (Only admins pay for the Sleeper/ESPN
+  // lookup; it's cached.)
+  let weekNeedingProp: number | null = null;
+  if (isAdmin) {
+    const upcoming = await getPickemWeek().catch(() => null);
+    const hasIt = current && upcoming && current.season === upcoming.season && current.week === upcoming.week;
+    if (upcoming && !hasIt) weekNeedingProp = upcoming.week;
+  }
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-8">
@@ -51,6 +63,15 @@ export default async function PickemPage() {
           <SignOutButton />
         </div>
       </div>
+
+      {weekNeedingProp !== null ? (
+        <Link
+          href="/pickem/admin"
+          className="mb-4 block rounded-lg bg-gold-500 px-4 py-3 text-center font-semibold text-navy-950 transition-colors hover:bg-gold-400"
+        >
+          Set Week {weekNeedingProp}&apos;s prop →
+        </Link>
+      ) : null}
 
       {current ? (
         <CurrentProp prop={current} viewerManagerId={viewer.manager.sleeperUserId} />
