@@ -36,9 +36,6 @@ export default async function PickemPage() {
     const hasIt = current && upcoming && current.season === upcoming.season && current.week === upcoming.week;
     if (upcoming && !hasIt) weekNeedingProp = upcoming.week;
   }
-  // Custom props can't grade themselves — flag them for the commissioner.
-  const customNeedsWinner =
-    isAdmin && current?.type === "custom" && current.status === "open" && current.locksAt <= new Date();
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-8">
@@ -67,15 +64,6 @@ export default async function PickemPage() {
           <SignOutButton />
         </div>
       </div>
-
-      {customNeedsWinner ? (
-        <Link
-          href="/pickem/admin"
-          className="mb-4 block rounded-lg bg-gold-500 px-4 py-3 text-center font-semibold text-navy-950 transition-colors hover:bg-gold-400"
-        >
-          Pick Week {current.week}&apos;s winner →
-        </Link>
-      ) : null}
 
       {weekNeedingProp !== null ? (
         <Link
@@ -139,7 +127,6 @@ async function CurrentProp({
       <h2 className="mt-3 font-display text-xl font-semibold text-fg uppercase sm:text-2xl">{p.question}</h2>
       <p className="mt-1 text-sm text-fg-muted">
         Win {formatMoney(p.payoutCents)} toward next year&apos;s auction
-        {p.type === "custom" ? " · Graded by the commissioner" : ""}
       </p>
 
       {result ? (

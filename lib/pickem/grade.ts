@@ -45,7 +45,6 @@ async function applyResult(p: Prop, result: PropResult) {
 export type GradeOutcome =
   | { status: "graded"; result: PropResult }
   | { status: "not-final" } // the NFL week isn't over yet
-  | { status: "needs-commissioner" } // custom prop: someone has to pick the winner
   | { status: "skipped"; reason: string };
 
 /**
@@ -56,16 +55,14 @@ export type GradeOutcome =
 export async function gradeFromScores(p: Prop, { force = false } = {}): Promise<GradeOutcome> {
   if (p.status === "void") return { status: "skipped", reason: "prop is void" };
   if (p.status === "graded" && !force) return { status: "skipped", reason: "already graded" };
-  if (p.type === "custom") return { status: "needs-commissioner" };
   if (!(await isNflWeekFinal(p.season, p.week))) return { status: "not-final" };
 
   const result = decideResult(p, await getRedraftScores(p.week));
-  if (!result) return { status: "needs-commissioner" };
   await applyResult(p, result);
   return { status: "graded", result };
 }
 
-/** The commissioner picks the winner(s) directly — custom props, or any override. */
+/** An admin sets the winner(s) directly — the override for when Sleeper's data is wrong. */
 export async function gradeManually(p: Prop, winningOptions: string[], note?: string): Promise<GradeOutcome> {
   if (p.status === "void") return { status: "skipped", reason: "prop is void" };
   const valid = new Set(p.options.map((o) => o.key));
@@ -79,7 +76,7 @@ export async function gradeManually(p: Prop, winningOptions: string[], note?: st
 
 /**
  * What the Tuesday cron runs: every locked, still-open prop whose NFL week
- * is over gets graded. Custom props are left for the commissioner. Safe to
+ * is over gets graded. Safe to
  * run any number of times.
  */
 export async function gradeDueProps() {

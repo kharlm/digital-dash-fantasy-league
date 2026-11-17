@@ -35,8 +35,7 @@ export type PropType =
   | "spread"
   | "straight_up"
   | "team_total"
-  | "top_scorer"
-  | "custom";
+  | "top_scorer";
 
 export type PropOption = { key: string; label: string };
 
@@ -49,7 +48,7 @@ export type PropParams =
   | { favoriteRosterId: number; underdogRosterId: number; line: number } // spread
   | { rosterIdA: number; rosterIdB: number } // straight_up
   | { rosterId: number; line: number } // team_total
-  | Record<string, never>; // top_scorer, custom
+  | Record<string, never>; // top_scorer
 
 export type PropResult = {
   winningOptions: string[]; // option keys; several on a tie

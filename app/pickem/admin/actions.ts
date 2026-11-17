@@ -13,7 +13,7 @@ import { getPickemWeek } from "@/lib/pickem/schedule";
 
 export type CreatePropState = { error?: string; created?: boolean };
 
-const PROP_TYPES: PropType[] = ["spread", "straight_up", "team_total", "top_scorer", "custom"];
+const PROP_TYPES: PropType[] = ["spread", "straight_up", "team_total", "top_scorer"];
 
 function dollarsToCents(value: FormDataEntryValue | null): number | null {
   const n = Number(value);
@@ -75,20 +75,6 @@ export async function createProp(_prev: CreatePropState, formData: FormData): Pr
     case "top_scorer":
       input = { type, teams: [...teams.values()] };
       break;
-    case "custom": {
-      const question = String(formData.get("question") ?? "").trim();
-      const options = String(formData.get("options") ?? "")
-        .split("\n")
-        .map((o) => o.trim())
-        .filter(Boolean);
-      if (!question) return { error: "Write the question." };
-      if (options.length < 2 || options.length > 12) return { error: "Give 2 to 12 options, one per line." };
-      if (new Set(options.map((o) => o.toLowerCase())).size !== options.length) {
-        return { error: "Options must all be different." };
-      }
-      input = { type, question, options };
-      break;
-    }
   }
 
   const built = buildProp(input);
@@ -135,7 +121,7 @@ export async function gradeNow(propId: number): Promise<GradeActionState> {
   refresh();
   if (outcome.status === "not-final") return { error: NOT_FINAL };
   if (outcome.status === "graded") return { message: "Graded — winners have been paid." };
-  return { error: outcome.status === "skipped" ? outcome.reason : "Pick the winner below." };
+  return { error: outcome.reason };
 }
 
 /** Re-pulls Sleeper's (possibly stat-corrected) scores and re-grades a graded prop. */
@@ -146,12 +132,10 @@ export async function regradeFromSleeper(propId: number): Promise<GradeActionSta
   const outcome = await gradeFromScores(p, { force: true });
   refresh();
   if (outcome.status === "not-final") return { error: NOT_FINAL };
-  return outcome.status === "graded"
-    ? { message: "Re-graded with Sleeper's latest scores." }
-    : { error: outcome.status === "skipped" ? outcome.reason : "Pick the winner below." };
+  return outcome.status === "graded" ? { message: "Re-graded with Sleeper's latest scores." } : { error: outcome.reason };
 }
 
-/** The commissioner picks the winner(s): custom props, or overriding any result. */
+/** An admin sets the winner(s) by hand — overriding a result. */
 export async function gradeByHand(propId: number, winningOptions: string[], note: string): Promise<GradeActionState> {
   await requireAdmin();
   const p = await loadProp(propId);

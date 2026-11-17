@@ -152,9 +152,7 @@ function Results({ prop: p }: { prop: typeof prop.$inferSelect }) {
     ? p.result?.push
       ? "Push — landed exactly on the line, every voter was paid."
       : `Winner: ${p.result?.winningOptions.map(label).join(" & ")}`
-    : p.type === "custom"
-      ? "Needs you to pick the winner."
-      : "Grades automatically once every NFL game this week is final (checked daily at 10 AM ET).";
+    : "Grades automatically once every NFL game this week is final (checked daily at 10 AM ET).";
 
   return (
     <section className="mt-4 mb-10 space-y-3 rounded-lg border border-navy-600 bg-navy-800 px-4 py-4">
@@ -171,7 +169,7 @@ function Results({ prop: p }: { prop: typeof prop.$inferSelect }) {
       <p className="text-sm text-fg">{p.question}</p>
       <p className="text-sm text-fg-muted">{status}</p>
       {p.result?.note ? <p className="text-xs text-fg-subtle">Note: {p.result.note}</p> : null}
-      <GradeControls propId={p.id} isCustom={p.type === "custom"} graded={graded} options={p.options} />
+      <GradeControls propId={p.id} graded={graded} options={p.options} />
     </section>
   );
 }

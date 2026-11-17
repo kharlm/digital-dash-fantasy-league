@@ -194,24 +194,6 @@ export function CreatePropForm({ matchups, teams, defaultLockIso, projectionsPro
         <p className="text-sm text-fg-muted">Everyone picks one of the 10 teams. Highest score of the week wins.</p>
       ) : null}
 
-      {type === "custom" ? (
-        <>
-          <div>
-            <label htmlFor="question" className={label}>
-              Question
-            </label>
-            <input id="question" name="question" required placeholder="Will anyone score 150+ this week?" className={field} />
-          </div>
-          <div>
-            <label htmlFor="options" className={label}>
-              Options — one per line
-            </label>
-            <textarea id="options" name="options" rows={4} required placeholder={"Yes\nNo"} className={field} />
-            <p className="mt-1 text-xs text-fg-subtle">Custom props are graded by hand after the week ends.</p>
-          </div>
-        </>
-      ) : null}
-
       <div>
         <label htmlFor="payout" className={label}>
           Payout per winner ($)

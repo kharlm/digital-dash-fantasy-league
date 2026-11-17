@@ -11,7 +11,6 @@ import { teamKey } from "./props";
  *  - team_total: that team's points vs. the line, same three outcomes.
  *  - straight_up: higher score wins; a tie pays both sides.
  *  - top_scorer: highest score in the league; ties pay every tied team.
- *  - custom: can't be decided from scores — the commissioner picks.
  *
  * A push (league rule): every voter wins the regular payout, whichever side
  * they took. `winningOptions` is empty then; the payout step reads `push`.
@@ -22,7 +21,7 @@ type Prop = Pick<typeof prop.$inferSelect, "type" | "params" | "options">;
 /** Sleeper scores have 2 decimals; compare in hundredths so float noise can't fake a push or a tie. */
 const hundredths = (n: number) => Math.round(n * 100);
 
-export function decideResult(p: Prop, scores: Map<number, number>): PropResult | null {
+export function decideResult(p: Prop, scores: Map<number, number>): PropResult {
   const pts = (rosterId: number) => {
     const s = scores.get(rosterId);
     if (s === undefined) throw new Error(`no final score for roster ${rosterId}`);
@@ -62,7 +61,5 @@ export function decideResult(p: Prop, scores: Map<number, number>): PropResult |
       const winners = ids.filter((id) => hundredths(pts(id)) === best);
       return { winningOptions: winners.map(teamKey), push: false, scores: scoresUsed(ids) };
     }
-    case "custom":
-      return null;
   }
 }

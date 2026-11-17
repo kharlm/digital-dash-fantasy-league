@@ -4,7 +4,7 @@ import type { PropOption, PropParams, PropType } from "@/lib/db/schema";
  * Turns what the commissioner fills in into a prop's stored question,
  * options and grading params — one builder per prop type. Option keys are
  * stable identifiers the grader returns as winners: "over"/"under",
- * `r<rosterId>` for a team, `o<n>` for custom options.
+ * `r<rosterId>` for a team.
  */
 
 type TeamRef = { rosterId: number; teamName: string };
@@ -13,8 +13,7 @@ export type PropInput =
   | { type: "spread"; favorite: TeamRef; underdog: TeamRef; line: number }
   | { type: "straight_up"; a: TeamRef; b: TeamRef }
   | { type: "team_total"; team: TeamRef; line: number }
-  | { type: "top_scorer"; teams: TeamRef[] }
-  | { type: "custom"; question: string; options: string[] };
+  | { type: "top_scorer"; teams: TeamRef[] };
 
 export type BuiltProp = {
   type: PropType;
@@ -28,7 +27,6 @@ export const PROP_TYPE_LABELS: Record<PropType, string> = {
   straight_up: "Straight up (who wins)",
   team_total: "Team total (over/under on points)",
   top_scorer: "Top scorer of the week",
-  custom: "Custom (graded by hand)",
 };
 
 /** 10 -> "10.0", 7.5 -> "7.5" — lines read like a sportsbook's. */
@@ -90,13 +88,6 @@ export function buildProp(input: PropInput): BuiltProp {
         options: [...input.teams]
           .sort((x, y) => x.teamName.localeCompare(y.teamName))
           .map((t) => ({ key: teamKey(t.rosterId), label: t.teamName })),
-        params: {},
-      };
-    case "custom":
-      return {
-        type: "custom",
-        question: input.question.trim(),
-        options: input.options.map((label, i) => ({ key: `o${i + 1}`, label: label.trim() })),
         params: {},
       };
   }

@@ -6,19 +6,17 @@ import { gradeByHand, gradeNow, regradeFromSleeper, type GradeActionState } from
 
 type Props = {
   propId: number;
-  isCustom: boolean;
   graded: boolean;
   options: { key: string; label: string }[];
 };
 
 /**
  * Admin grading for a locked prop:
- *  - ungraded, auto-gradable: "Grade now" (same as the daily cron)
- *  - ungraded custom: pick the winner(s)
+ *  - ungraded: "Grade now" (same as the daily cron)
  *  - graded: override — re-pull Sleeper's scores (stat corrections), or set
  *    the winner(s) by hand with a note. Either replaces the payouts.
  */
-export function GradeControls({ propId, isCustom, graded, options }: Props) {
+export function GradeControls({ propId, graded, options }: Props) {
   const [pending, startTransition] = useTransition();
   const [state, setState] = useState<GradeActionState>({});
   const [overriding, setOverriding] = useState(false);
@@ -36,13 +34,13 @@ export function GradeControls({ propId, isCustom, graded, options }: Props) {
   const toggle = (key: string) =>
     setWinners((w) => (w.includes(key) ? w.filter((k) => k !== key) : [...w, key]));
 
-  const showPicker = (!graded && isCustom) || overriding;
+  const showPicker = overriding;
   const button =
     "rounded-lg px-3 py-2 text-sm font-semibold transition-colors disabled:opacity-50";
 
   return (
     <div className="space-y-3 border-t border-navy-600 pt-4">
-      {!graded && !isCustom ? (
+      {!graded ? (
         <button
           type="button"
           disabled={pending}
@@ -59,7 +57,7 @@ export function GradeControls({ propId, isCustom, graded, options }: Props) {
         </button>
       ) : null}
 
-      {overriding && !isCustom ? (
+      {overriding ? (
         <div className="space-y-1">
           <button
             type="button"
@@ -76,7 +74,7 @@ export function GradeControls({ propId, isCustom, graded, options }: Props) {
       {showPicker ? (
         <fieldset className="space-y-2">
           <legend className="mb-1 text-sm font-medium text-fg-muted">
-            {graded ? "Set the winner(s) by hand" : "Pick the winner(s)"}
+            Set the winner(s) by hand
           </legend>
           {options.map((o) => (
             <label key={o.key} className="flex items-center gap-2 text-sm text-fg">
