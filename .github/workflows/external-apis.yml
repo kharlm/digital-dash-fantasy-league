@@ -1,0 +1,37 @@
+name: Daily Sleeper/ESPN check
+
+# Every morning, run test/contract against the REAL Sleeper and ESPN APIs
+# to catch them changing on their side — especially Sleeper's unofficial
+# projections endpoint — before anyone needs Pick'em. A failure here means
+# their API moved, not that our code broke; GitHub emails on failure.
+#
+# Scheduled workflows only run from the default branch, so this file lives
+# on main. Until Pick'em is merged, the code under test is on the `pickem`
+# branch: check that out while it exists, otherwise test main. No change
+# needed at launch — once `pickem` is merged and deleted, this tests main.
+on:
+  schedule:
+    - cron: "0 13 * * *" # 8 AM Eastern (9 AM during daylight time)
+  workflow_dispatch: # "Run workflow" button for a manual check
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Use the pickem branch while it exists
+        run: git checkout pickem 2>/dev/null && echo "Testing pickem" || echo "Testing main"
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check Sleeper and ESPN
+        run: npm run test:contract
