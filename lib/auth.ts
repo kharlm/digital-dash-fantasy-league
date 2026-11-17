@@ -5,6 +5,7 @@ import { betterAuth } from "better-auth";
 import { nextCookies } from "better-auth/next-js";
 import { emailOTP } from "better-auth/plugins";
 
+import { lanAddresses } from "@/lib/dev-lan";
 import { db } from "@/lib/db";
 import * as schema from "@/lib/db/schema";
 import { sendSignInCode } from "@/lib/email";
@@ -45,9 +46,17 @@ export const auth = betterAuth({
   },
   socialProviders,
   // Apple posts its OAuth callback from its own origin.
-  trustedOrigins: ["https://appleid.apple.com"],
+  trustedOrigins: [
+    "https://appleid.apple.com",
+    // Dev only: sign in from a phone on the same Wi-Fi (see next.config.ts).
+    ...(process.env.NODE_ENV === "production" ? [] : lanAddresses().map((ip) => `http://${ip}:3000`)),
+  ],
   plugins: [
     emailOTP({
+      // Dev server only: every code is 123456, for demos without Resend.
+      // `next build` (production and Vercel previews) always sets
+      // NODE_ENV=production, so real sign-ins keep random codes.
+      ...(process.env.NODE_ENV === "development" ? { generateOTP: () => "123456" } : {}),
       async sendVerificationOTP({ email, otp, type }) {
         if (type === "sign-in") await sendSignInCode(email, otp);
       },

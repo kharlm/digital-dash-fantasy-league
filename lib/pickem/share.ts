@@ -4,6 +4,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { asc, count, eq } from "drizzle-orm";
 
 import { db } from "@/lib/db";
+import { lanAddresses } from "@/lib/dev-lan";
 import { ledgerEntry, manager, prop, vote } from "@/lib/db/schema";
 
 import { getCapTable } from "./ledger";
@@ -13,8 +14,14 @@ import { announcementText, recapText, type AnnouncementFacts, type RecapFacts } 
 
 type Prop = typeof prop.$inferSelect;
 
-/** Shared links must point at the real site; locally they point at the dev server so they can be clicked. */
-export const SITE_URL = process.env.NODE_ENV === "production" ? "https://digitaldashfl.com" : "http://localhost:3000";
+/**
+ * Shared links must point at the real site. In dev they point at this Mac's
+ * Wi-Fi address, so a test post opened on a phone still links somewhere real.
+ */
+export const SITE_URL =
+  process.env.NODE_ENV === "production"
+    ? "https://digitaldashfl.com"
+    : `http://${lanAddresses()[0] ?? "localhost"}:3000`;
 
 /** The public page for a week's prop — what the WhatsApp link preview reads. */
 export const propShareUrl = (p: Pick<Prop, "season" | "week">) => `${SITE_URL}/pickem/${p.season}/${p.week}`;
