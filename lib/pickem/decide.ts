@@ -9,6 +9,7 @@ import { teamKey } from "./props";
  *  - spread: favorite's margin vs. the line. Over / under; exactly on the
  *    line is a push.
  *  - team_total: that team's points vs. the line, same three outcomes.
+ *  - league_total: every team's points added up vs. the line, same three.
  *  - straight_up: higher score wins; a tie pays both sides.
  *  - top_scorer: highest score in the league; ties pay every tied team.
  *
@@ -47,6 +48,14 @@ export function decideResult(p: Prop, scores: Map<number, number>): PropResult {
       const { rosterId, line } = p.params as Extract<PropParams, { rosterId: number }>;
       const side = overUnder(pts(rosterId), line);
       return { winningOptions: side ? [side] : [], push: side === null, scores: scoresUsed([rosterId]) };
+    }
+    case "league_total": {
+      // The teams are fixed when the prop is set, so a missing score throws
+      // rather than quietly grading a smaller total.
+      const { rosterIds, line } = p.params as Extract<PropParams, { rosterIds: number[] }>;
+      const total = rosterIds.reduce((sum, id) => sum + hundredths(pts(id)), 0) / 100;
+      const side = overUnder(total, line);
+      return { winningOptions: side ? [side] : [], push: side === null, scores: scoresUsed(rosterIds) };
     }
     case "straight_up": {
       const { rosterIdA: a, rosterIdB: b } = p.params as Extract<PropParams, { rosterIdA: number }>;

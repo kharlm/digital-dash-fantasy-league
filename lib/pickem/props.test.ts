@@ -28,6 +28,13 @@ describe("buildProp", () => {
     expect(p.params).toEqual({ rosterId: 4, line: 120.5 });
   });
 
+  it("league total: over/under on every team combined, teams fixed when set", () => {
+    const p = buildProp({ type: "league_total", teams: [inkyu, chris], line: 1200 });
+    expect(p.question).toBe("DDFL total score — all 2 teams combined — Line: 1200.0");
+    expect(p.options.map((o) => o.key)).toEqual(["over", "under"]);
+    expect(p.params).toEqual({ rosterIds: [4, inkyu.rosterId].sort((a, b) => a - b), line: 1200 });
+  });
+
   it("top scorer: every team as an option, alphabetical", () => {
     const p = buildProp({ type: "top_scorer", teams: [inkyu, chris] });
     expect(p.options.map((o) => o.label)).toEqual(["Chris", "Inkyu"]);

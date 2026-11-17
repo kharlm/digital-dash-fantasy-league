@@ -55,6 +55,11 @@ export function CreatePropForm({ matchups, teams, defaultLockIso, projectionsPro
         ? { favorite: matchup.a.rosterId, line: suggestLine(matchup.a.projected - matchup.b.projected) }
         : { favorite: matchup.b.rosterId, line: suggestLine(matchup.b.projected - matchup.a.projected) }
       : null;
+  // Only suggest a league line when every team has a projection — a partial
+  // sum would come out hundreds of points low.
+  const leagueProjected = teams.length > 0 && teams.every((t) => t.projected !== null)
+    ? teams.reduce((sum, t) => sum + (t.projected ?? 0), 0)
+    : null;
   const lockIso = lockLocal ? new Date(lockLocal).toISOString() : "";
 
   return (
@@ -187,6 +192,29 @@ export function CreatePropForm({ matchups, teams, defaultLockIso, projectionsPro
               <p className="mt-1 text-xs text-fg-subtle">Sleeper projects {totalTeam.projected.toFixed(1)}</p>
             ) : null}
           </div>
+        </div>
+      ) : null}
+
+      {type === "league_total" ? (
+        <div>
+          <label htmlFor="line" className={label}>
+            Line (all {teams.length} teams combined)
+          </label>
+          <input
+            id="line"
+            name="line"
+            type="number"
+            inputMode="decimal"
+            step="0.5"
+            min="0.5"
+            required
+            defaultValue={leagueProjected !== null ? suggestLine(leagueProjected) : undefined}
+            placeholder="1200"
+            className={field}
+          />
+          {leagueProjected !== null ? (
+            <p className="mt-1 text-xs text-fg-subtle">Sleeper projects {leagueProjected.toFixed(1)} combined</p>
+          ) : null}
         </div>
       ) : null}
 

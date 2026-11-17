@@ -35,6 +35,7 @@ export type PropType =
   | "spread"
   | "straight_up"
   | "team_total"
+  | "league_total"
   | "top_scorer";
 
 export type PropOption = { key: string; label: string };
@@ -48,11 +49,12 @@ export type PropParams =
   | { favoriteRosterId: number; underdogRosterId: number; line: number } // spread
   | { rosterIdA: number; rosterIdB: number } // straight_up
   | { rosterId: number; line: number } // team_total
+  | { rosterIds: number[]; line: number } // league_total: every team's points combined
   | Record<string, never>; // top_scorer
 
 export type PropResult = {
   winningOptions: string[]; // option keys; several on a tie
-  // A spread that lands exactly on the line: every voter wins the regular
+  // A spread or total that lands exactly on the line: every voter wins the regular
   // payout, whichever side they took (league decision, 2026-11-16 — it
   // replaced a separate push amount; with 2-decimal scores it almost never
   // happens).

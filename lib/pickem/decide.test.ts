@@ -60,6 +60,24 @@ describe("team total", () => {
   });
 });
 
+describe("league total", () => {
+  const leagueTotal = (line: number): TestProp => ({ type: "league_total", options: [], params: { rosterIds: [1, 2, 3], line } });
+
+  it("adds every team's points and compares to the line", () => {
+    expect(decideResult(leagueTotal(300), scores({ 1: 120.5, 2: 99.25, 3: 100.5 })).winningOptions).toEqual(["over"]);
+    expect(decideResult(leagueTotal(330), scores({ 1: 120.5, 2: 99.25, 3: 100.5 })).winningOptions).toEqual(["under"]);
+  });
+
+  it("push when the combined total lands exactly on the line, despite float noise", () => {
+    // 0.1 + 0.2 + 0.2 is 0.5000000000000001 in floating point.
+    expect(decideResult(leagueTotal(300.5), scores({ 1: 100.1, 2: 100.2, 3: 100.2 }))).toMatchObject({ push: true });
+  });
+
+  it("refuses to grade if any team's score is missing", () => {
+    expect(() => decideResult(leagueTotal(300), scores({ 1: 120, 2: 100 }))).toThrow(/roster 3/);
+  });
+});
+
 describe("straight up", () => {
   it("the higher score wins", () => {
     expect(decideResult(straightUp, scores({ 1: 99.99, 2: 100 })).winningOptions).toEqual(["r2"]);

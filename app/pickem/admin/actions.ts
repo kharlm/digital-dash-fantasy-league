@@ -13,7 +13,7 @@ import { getPickemWeek } from "@/lib/pickem/schedule";
 
 export type CreatePropState = { error?: string; created?: boolean };
 
-const PROP_TYPES: PropType[] = ["spread", "straight_up", "team_total", "top_scorer"];
+const PROP_TYPES: PropType[] = ["spread", "straight_up", "team_total", "league_total", "top_scorer"];
 
 function dollarsToCents(value: FormDataEntryValue | null): number | null {
   const n = Number(value);
@@ -72,6 +72,11 @@ export async function createProp(_prev: CreatePropState, formData: FormData): Pr
       input = { type, team: t, line };
       break;
     }
+    case "league_total":
+      // Ten teams combine for ~1,000–1,400; validLine's 500 cap is per team.
+      if (!(Number.isFinite(line) && line > 0 && line < 5000)) return { error: "Enter a line greater than 0." };
+      input = { type, teams: [...teams.values()], line };
+      break;
     case "top_scorer":
       input = { type, teams: [...teams.values()] };
       break;

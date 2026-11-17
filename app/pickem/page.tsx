@@ -146,7 +146,11 @@ async function CurrentProp({
                 : "You didn't vote on this one."}
           </p>
           {result.push ? <p className="mt-1">It landed exactly on the line — every voter wins.</p> : null}
-          {result.scores && p.type !== "top_scorer" ? (
+          {result.scores && p.type === "league_total" ? (
+            <p className="mt-1 text-xs text-fg-subtle">
+              Final: {leagueTotal(result.scores).toFixed(2)} points combined
+            </p>
+          ) : result.scores && p.type !== "top_scorer" ? (
             <p className="mt-1 text-xs text-fg-subtle">
               Final:{" "}
               {scoreOrder(p.params, result.scores)
@@ -181,6 +185,11 @@ async function CurrentProp({
       </p>
     </section>
   );
+}
+
+/** Summed in hundredths, the same way grading does, so the shown total matches the result. */
+function leagueTotal(scores: Record<number, number>): number {
+  return Object.values(scores).reduce((sum, pts) => sum + Math.round(pts * 100), 0) / 100;
 }
 
 /**

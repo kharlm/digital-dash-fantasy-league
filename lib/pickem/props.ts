@@ -13,6 +13,7 @@ export type PropInput =
   | { type: "spread"; favorite: TeamRef; underdog: TeamRef; line: number }
   | { type: "straight_up"; a: TeamRef; b: TeamRef }
   | { type: "team_total"; team: TeamRef; line: number }
+  | { type: "league_total"; teams: TeamRef[]; line: number }
   | { type: "top_scorer"; teams: TeamRef[] };
 
 export type BuiltProp = {
@@ -26,6 +27,7 @@ export const PROP_TYPE_LABELS: Record<PropType, string> = {
   spread: "Spread (over/under on the margin)",
   straight_up: "Straight up (who wins)",
   team_total: "Team total (over/under on points)",
+  league_total: "League total (all teams' points combined)",
   top_scorer: "Top scorer of the week",
 };
 
@@ -79,6 +81,18 @@ export function buildProp(input: PropInput): BuiltProp {
           { key: "under", label: `Under: fewer than ${l} points` },
         ],
         params: { rosterId: team.rosterId, line },
+      };
+    }
+    case "league_total": {
+      const l = formatLine(input.line);
+      return {
+        type: "league_total",
+        question: `DDFL total score — all ${input.teams.length} teams combined — Line: ${l}`,
+        options: [
+          { key: "over", label: `Over: more than ${l} points combined` },
+          { key: "under", label: `Under: fewer than ${l} points combined` },
+        ],
+        params: { rosterIds: input.teams.map((t) => t.rosterId).sort((a, b) => a - b), line: input.line },
       };
     }
     case "top_scorer":
