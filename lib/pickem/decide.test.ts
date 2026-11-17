@@ -4,15 +4,24 @@ import { decideResult } from "./decide";
 
 const scores = (o: Record<number, number>) => new Map(Object.entries(o).map(([k, v]) => [Number(k), v]));
 
-const spread = (line: number) =>
-  ({ type: "spread", options: [], params: { favoriteRosterId: 1, underdogRosterId: 2, line } }) as const;
-const teamTotal = (line: number) => ({ type: "team_total", options: [], params: { rosterId: 3, line } }) as const;
-const straightUp = { type: "straight_up", options: [], params: { rosterIdA: 1, rosterIdB: 2 } } as const;
-const topScorer = {
+type TestProp = Parameters<typeof decideResult>[0];
+
+const spread = (line: number): TestProp => ({
+  type: "spread",
+  options: [],
+  params: { favoriteRosterId: 1, underdogRosterId: 2, line },
+});
+const teamTotal = (line: number): TestProp => ({ type: "team_total", options: [], params: { rosterId: 3, line } });
+const straightUp: TestProp = { type: "straight_up", options: [], params: { rosterIdA: 1, rosterIdB: 2 } };
+const topScorer: TestProp = {
   type: "top_scorer",
-  options: [{ key: "r1", label: "A" }, { key: "r2", label: "B" }, { key: "r3", label: "C" }],
+  options: [
+    { key: "r1", label: "A" },
+    { key: "r2", label: "B" },
+    { key: "r3", label: "C" },
+  ],
   params: {},
-} as const;
+};
 
 describe("spread", () => {
   it("Over when the favorite wins by more than the line", () => {
