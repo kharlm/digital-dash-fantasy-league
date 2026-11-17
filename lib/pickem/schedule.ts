@@ -41,3 +41,18 @@ export async function getPickemWeek(now = new Date()): Promise<PickemWeek> {
   const next = current + 1;
   return { season, week: next, firstKickoff: await getFirstKickoff(season, next) };
 }
+
+type EspnScoreboardStatus = { events?: { status?: { type?: { completed?: boolean } } }[] };
+
+/**
+ * Every NFL game of the week has finished — the earliest point fantasy
+ * scores can be final. (Sleeper applies stat corrections later in the week;
+ * the commissioner's override covers those.) Not cached: grading asks this
+ * once a week, and a stale "not yet" would delay payouts.
+ */
+export async function isNflWeekFinal(season: number, week: number): Promise<boolean> {
+  const res = await fetch(`${ESPN_SCOREBOARD}?seasontype=2&week=${week}&dates=${season}`, { cache: "no-store" });
+  if (!res.ok) return false;
+  const events = ((await res.json()) as EspnScoreboardStatus).events ?? [];
+  return events.length > 0 && events.every((e) => e.status?.type?.completed === true);
+}
