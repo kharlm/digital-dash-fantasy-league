@@ -6,7 +6,14 @@ import { castVote } from "@/app/pickem/actions";
 
 type Option = { key: string; label: string; voters: string[] };
 
-type Props = { propId: number; locked: boolean; myVote: string | null; options: Option[] };
+type Props = {
+  propId: number;
+  locked: boolean;
+  myVote: string | null;
+  options: Option[];
+  /** Once graded: the winning option keys (empty on a push). */
+  winners: string[] | null;
+};
 
 /**
  * One big tappable button per option, showing who's on each side (votes are
@@ -14,7 +21,7 @@ type Props = { propId: number; locked: boolean; myVote: string | null; options: 
  * so a tap feels instant; the server action then revalidates the page with
  * the real counts.
  */
-export function VotePanel({ propId, locked, myVote, options }: Props) {
+export function VotePanel({ propId, locked, myVote, options, winners }: Props) {
   const [pending, startTransition] = useTransition();
   const [optimisticVote, setOptimisticVote] = useOptimistic(myVote);
   const [error, setError] = useState<string | null>(null);
@@ -33,6 +40,7 @@ export function VotePanel({ propId, locked, myVote, options }: Props) {
     <div className="mt-5 space-y-3">
       {options.map((o) => {
         const mine = optimisticVote === o.key;
+        const won = winners?.includes(o.key) ?? false;
         return (
           <button
             key={o.key}
@@ -41,7 +49,7 @@ export function VotePanel({ propId, locked, myVote, options }: Props) {
             disabled={locked}
             aria-pressed={mine}
             className={`block w-full rounded-lg border px-4 py-3 text-left transition-colors ${
-              mine ? "border-gold-500 bg-gold-500/10" : "border-navy-600 bg-navy-900"
+              won ? "border-emerald-500 bg-emerald-500/10" : mine ? "border-gold-500 bg-gold-500/10" : "border-navy-600 bg-navy-900"
             } ${locked ? "cursor-default" : "hover:border-gold-500"}`}
           >
             <span className="flex items-start justify-between gap-3">
@@ -51,8 +59,11 @@ export function VotePanel({ propId, locked, myVote, options }: Props) {
             {o.voters.length > 0 ? (
               <span className="mt-1 block text-xs text-fg-muted">{o.voters.join(", ")}</span>
             ) : null}
+            {won ? (
+              <span className="mt-1 mr-3 inline-block text-xs font-semibold text-emerald-400 uppercase">Winner</span>
+            ) : null}
             {mine ? (
-              <span className="mt-1 block text-xs font-semibold text-gold-400 uppercase">
+              <span className="mt-1 inline-block text-xs font-semibold text-gold-400 uppercase">
                 {pending ? "Saving…" : "Your pick"}
               </span>
             ) : null}

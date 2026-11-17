@@ -8,6 +8,7 @@ import { prop, type PropType } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/dal";
 import { getRedraftMatchups, getRedraftTeams } from "@/lib/pickem/matchups";
 import { buildProp, type PropInput } from "@/lib/pickem/props";
+import { gradeFromScores, gradeManually } from "@/lib/pickem/grade";
 import { getPickemWeek } from "@/lib/pickem/schedule";
 
 export type CreatePropState = { error?: string; created?: boolean };
@@ -113,4 +114,52 @@ export async function deleteOpenProp(propId: number) {
   await db.delete(prop).where(and(eq(prop.id, propId), eq(prop.status, "open")));
   refresh();
   return {};
+}
+
+export type GradeActionState = { error?: string; message?: string };
+
+async function loadProp(propId: number) {
+  const [p] = await db.select().from(prop).where(eq(prop.id, propId));
+  return p;
+}
+
+const NOT_FINAL = "Not every NFL game this week is final yet — it'll grade automatically once they are.";
+
+/** "Grade now": the same scoring the daily cron does, on demand. */
+export async function gradeNow(propId: number): Promise<GradeActionState> {
+  await requireAdmin();
+  const p = await loadProp(propId);
+  if (!p) return { error: "That prop no longer exists." };
+  if (p.locksAt > new Date()) return { error: "Voting hasn't locked yet." };
+  const outcome = await gradeFromScores(p);
+  refresh();
+  if (outcome.status === "not-final") return { error: NOT_FINAL };
+  if (outcome.status === "graded") return { message: "Graded — winners have been paid." };
+  return { error: outcome.status === "skipped" ? outcome.reason : "Pick the winner below." };
+}
+
+/** Re-pulls Sleeper's (possibly stat-corrected) scores and re-grades a graded prop. */
+export async function regradeFromSleeper(propId: number): Promise<GradeActionState> {
+  await requireAdmin();
+  const p = await loadProp(propId);
+  if (!p) return { error: "That prop no longer exists." };
+  const outcome = await gradeFromScores(p, { force: true });
+  refresh();
+  if (outcome.status === "not-final") return { error: NOT_FINAL };
+  return outcome.status === "graded"
+    ? { message: "Re-graded with Sleeper's latest scores." }
+    : { error: outcome.status === "skipped" ? outcome.reason : "Pick the winner below." };
+}
+
+/** The commissioner picks the winner(s): custom props, or overriding any result. */
+export async function gradeByHand(propId: number, winningOptions: string[], note: string): Promise<GradeActionState> {
+  await requireAdmin();
+  const p = await loadProp(propId);
+  if (!p) return { error: "That prop no longer exists." };
+  if (p.locksAt > new Date()) return { error: "Voting hasn't locked yet." };
+  const outcome = await gradeManually(p, winningOptions, note.trim() || undefined);
+  refresh();
+  return outcome.status === "graded"
+    ? { message: "Result saved — winners have been paid." }
+    : { error: outcome.status === "skipped" ? outcome.reason : "Couldn't grade that." };
 }

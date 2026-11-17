@@ -6,9 +6,10 @@ import { SignOutButton } from "@/components/pickem/sign-out-button";
 import { VotePanel } from "@/components/pickem/vote-panel";
 import { redraftTeamNames } from "@/lib/data/pickem-teams";
 import { db } from "@/lib/db";
-import { manager, prop, vote } from "@/lib/db/schema";
+import { manager, prop, vote, type PropParams } from "@/lib/db/schema";
 import { requireManager } from "@/lib/dal";
 import { formatEastern, formatMoney } from "@/lib/pickem/format";
+import { getRedraftTeams } from "@/lib/pickem/matchups";
 import { getPickemWeek } from "@/lib/pickem/schedule";
 
 export const metadata: Metadata = {
@@ -35,6 +36,9 @@ export default async function PickemPage() {
     const hasIt = current && upcoming && current.season === upcoming.season && current.week === upcoming.week;
     if (upcoming && !hasIt) weekNeedingProp = upcoming.week;
   }
+  // Custom props can't grade themselves — flag them for the commissioner.
+  const customNeedsWinner =
+    isAdmin && current?.type === "custom" && current.status === "open" && current.locksAt <= new Date();
 
   return (
     <div className="mx-auto w-full max-w-3xl flex-1 px-6 py-8">
@@ -63,6 +67,15 @@ export default async function PickemPage() {
           <SignOutButton />
         </div>
       </div>
+
+      {customNeedsWinner ? (
+        <Link
+          href="/pickem/admin"
+          className="mb-4 block rounded-lg bg-gold-500 px-4 py-3 text-center font-semibold text-navy-950 transition-colors hover:bg-gold-400"
+        >
+          Pick Week {current.week}&apos;s winner →
+        </Link>
+      ) : null}
 
       {weekNeedingProp !== null ? (
         <Link
@@ -104,6 +117,14 @@ async function CurrentProp({
 
   const locked = p.status !== "open" || p.locksAt <= new Date();
   const voted = new Set(votes.map((v) => v.managerId));
+  const result = p.status === "graded" ? p.result : null;
+  const myVote = votes.find((v) => v.managerId === viewerManagerId)?.option ?? null;
+  const iWon = result && myVote !== null && (result.push || result.winningOptions.includes(myVote));
+  // Only needed for the "Final:" score line; a Sleeper hiccup just means
+  // generic names there, never a broken page.
+  const teamNames = result?.scores
+    ? new Map([...(await getRedraftTeams().catch(() => new Map())).values()].map((t) => [t.rosterId, t.teamName]))
+    : new Map<number, string>();
 
   return (
     <section className="rounded-lg border border-navy-600 bg-navy-800 px-4 py-5 sm:px-6">
@@ -121,10 +142,37 @@ async function CurrentProp({
         {p.type === "custom" ? " · Graded by the commissioner" : ""}
       </p>
 
+      {result ? (
+        <div
+          className={`mt-4 rounded-lg px-4 py-3 text-sm ${
+            iWon ? "bg-emerald-500/15 text-emerald-300" : "bg-navy-900 text-fg-muted"
+          }`}
+        >
+          <p className="font-semibold">
+            {iWon
+              ? `You won ${formatMoney(p.payoutCents)} toward next year's auction!`
+              : myVote
+                ? "Not this week."
+                : "You didn't vote on this one."}
+          </p>
+          {result.push ? <p className="mt-1">It landed exactly on the line — every voter wins.</p> : null}
+          {result.scores && p.type !== "top_scorer" ? (
+            <p className="mt-1 text-xs text-fg-subtle">
+              Final:{" "}
+              {scoreOrder(p.params, result.scores)
+                .map(([rosterId, pts]) => `${teamNames.get(rosterId) ?? `Team ${rosterId}`} ${pts.toFixed(2)}`)
+                .join(" – ")}
+            </p>
+          ) : null}
+          {result.note ? <p className="mt-1 text-xs text-fg-subtle">Commissioner&apos;s note: {result.note}</p> : null}
+        </div>
+      ) : null}
+
       <VotePanel
         propId={p.id}
         locked={locked}
-        myVote={votes.find((v) => v.managerId === viewerManagerId)?.option ?? null}
+        winners={result ? result.winningOptions : null}
+        myVote={myVote}
         options={p.options.map((o) => ({
           key: o.key,
           label: o.label,
@@ -143,4 +191,19 @@ async function CurrentProp({
       </p>
     </section>
   );
+}
+
+/**
+ * Final scores in the order the prop reads — favorite first for a spread,
+ * team A first straight up. (The stored scores object can't keep that order:
+ * JS sorts integer keys numerically, i.e. by Sleeper roster id.)
+ */
+function scoreOrder(params: PropParams, scores: Record<number, number>): [number, number][] {
+  const order =
+    "favoriteRosterId" in params
+      ? [params.favoriteRosterId, params.underdogRosterId]
+      : "rosterIdA" in params
+        ? [params.rosterIdA, params.rosterIdB]
+        : Object.keys(scores).map(Number);
+  return order.filter((id) => id in scores).map((id) => [id, scores[id]]);
 }

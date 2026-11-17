@@ -1,9 +1,10 @@
-import { and, count, eq } from "drizzle-orm";
+import { and, count, desc, eq, lte } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
 import { CreatePropForm } from "@/components/pickem/create-prop-form";
 import { DeletePropButton } from "@/components/pickem/delete-prop-button";
+import { GradeControls } from "@/components/pickem/grade-controls";
 import { db } from "@/lib/db";
 import { prop, vote } from "@/lib/db/schema";
 import { requireAdmin } from "@/lib/dal";
@@ -38,16 +39,29 @@ export default async function PickemAdminPage({ searchParams }: PageProps<"/pick
     process.env.NODE_ENV !== "production" && typeof simulate === "string" ? SIMULATED[simulate] : undefined;
   const { season, week, firstKickoff } = await getPickemWeek();
 
-  const [existing] = await db
-    .select()
-    .from(prop)
-    .where(and(eq(prop.season, season), eq(prop.week, week)));
+  const [[existing], [lastLocked]] = await Promise.all([
+    db
+      .select()
+      .from(prop)
+      .where(and(eq(prop.season, season), eq(prop.week, week))),
+    // The most recent prop whose voting has closed — what needs grading now
+    // (or an override later).
+    db
+      .select()
+      .from(prop)
+      .where(lte(prop.locksAt, new Date()))
+      .orderBy(desc(prop.season), desc(prop.week))
+      .limit(1),
+  ]);
 
   return (
     <div className="mx-auto w-full max-w-xl flex-1 px-6 py-8">
       <Link href="/pickem" className="text-sm text-fg-muted hover:text-fg">
         ← Pick&apos;em
       </Link>
+
+      {lastLocked ? <Results prop={lastLocked} /> : null}
+
       <h1 className="mt-4 font-display text-3xl font-semibold text-fg uppercase">Week {week} prop</h1>
       <p className="mb-8 text-fg-muted">
         {firstKickoff ? `First kickoff ${formatEastern(firstKickoff)}.` : "Couldn't load this week's kickoff time."}
@@ -128,5 +142,36 @@ async function ExistingProp({ prop: p }: { prop: typeof prop.$inferSelect }) {
       </dl>
       {!locked && p.status === "open" ? <DeletePropButton propId={p.id} votes={votes} /> : null}
     </div>
+  );
+}
+
+function Results({ prop: p }: { prop: typeof prop.$inferSelect }) {
+  const graded = p.status === "graded";
+  const label = (key: string) => p.options.find((o) => o.key === key)?.label ?? key;
+  const status = graded
+    ? p.result?.push
+      ? "Push — landed exactly on the line, every voter was paid."
+      : `Winner: ${p.result?.winningOptions.map(label).join(" & ")}`
+    : p.type === "custom"
+      ? "Needs you to pick the winner."
+      : "Grades automatically once every NFL game this week is final (checked daily at 10 AM ET).";
+
+  return (
+    <section className="mt-4 mb-10 space-y-3 rounded-lg border border-navy-600 bg-navy-800 px-4 py-4">
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="font-display text-xl font-semibold text-fg uppercase">Week {p.week} results</h2>
+        <span
+          className={`rounded px-1.5 py-0.5 text-[10px] font-bold tracking-wide uppercase ${
+            graded ? "bg-gold-500 text-navy-950" : "bg-orange-500 text-navy-950"
+          }`}
+        >
+          {graded ? "Graded" : "Ungraded"}
+        </span>
+      </div>
+      <p className="text-sm text-fg">{p.question}</p>
+      <p className="text-sm text-fg-muted">{status}</p>
+      {p.result?.note ? <p className="text-xs text-fg-subtle">Note: {p.result.note}</p> : null}
+      <GradeControls propId={p.id} isCustom={p.type === "custom"} graded={graded} options={p.options} />
+    </section>
   );
 }
