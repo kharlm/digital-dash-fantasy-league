@@ -58,6 +58,9 @@ export default async function PickemPage() {
               Admin
             </Link>
           ) : null}
+          <Link href="/pickem/ledger" className="text-fg-muted hover:text-fg">
+            Caps
+          </Link>
           <Link href="/pickem/settings" className="text-fg-muted hover:text-fg">
             Settings
           </Link>
