@@ -12,7 +12,7 @@ interface CelebrationOverlayProps {
 
 /**
  * Shared full-screen dismissible chrome for one-off celebratory overlays
- * (KalenSplash, the Scores-page champion reveal): backdrop, Escape key,
+ * (e.g. the Scores-page champion reveal): backdrop, Escape key,
  * click-anywhere-to-dismiss, and an explicit close button. Content is
  * entirely up to the caller.
  */
