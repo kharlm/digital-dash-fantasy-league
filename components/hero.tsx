@@ -1,7 +1,5 @@
 import Image from "next/image";
 
-import { DraftCountdown } from "@/components/draft-countdown";
-import { LEAGUES } from "@/config/leagues";
 
 /**
  * No "use client" and no Framer Motion here — this used to animate in via
@@ -37,14 +35,7 @@ export function Hero() {
         </p>
       </div>
 
-      <div className="animate-hero-in space-y-2" style={{ animationDelay: "0.2s" }}>
-        <p className="text-xs font-medium tracking-[0.2em] text-fg-subtle uppercase">
-          Redraft Draft Countdown
-        </p>
-        <DraftCountdown targetIso={LEAGUES.redraft.draftTime} />
-      </div>
-
-      <p className="animate-hero-in max-w-md text-balance text-fg-subtle" style={{ animationDelay: "0.3s" }}>
+      <p className="animate-hero-in max-w-md text-balance text-fg-subtle" style={{ animationDelay: "0.2s" }}>
         Standings, drafts, brackets, and a decade of grudges — dynasty and
         redraft, all in one place.
       </p>
