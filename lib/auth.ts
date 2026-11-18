@@ -47,6 +47,10 @@ export const auth = betterAuth({
   socialProviders,
   // Apple posts its OAuth callback from its own origin.
   trustedOrigins: [
+    // The live site, named here so sign-in never hinges on BETTER_AUTH_URL
+    // being typed exactly right in Vercel.
+    "https://digitaldashfl.com",
+    "https://www.digitaldashfl.com",
     "https://appleid.apple.com",
     // Dev only: sign in from a phone on the same Wi-Fi (see next.config.ts).
     ...(process.env.NODE_ENV === "production" ? [] : lanAddresses().map((ip) => `http://${ip}:3000`)),
