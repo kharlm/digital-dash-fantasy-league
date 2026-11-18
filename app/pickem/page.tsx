@@ -2,6 +2,7 @@ import { asc, desc, eq } from "drizzle-orm";
 import type { Metadata } from "next";
 import Link from "next/link";
 
+import { SharePost } from "@/components/pickem/share-post";
 import { SignOutButton } from "@/components/pickem/sign-out-button";
 import { VotePanel } from "@/components/pickem/vote-panel";
 import { redraftTeamNames } from "@/lib/data/pickem-teams";
@@ -32,7 +33,14 @@ export default async function PickemPage() {
   // showing last week's locked prop. (Only admins pay for the Sleeper/ESPN
   // lookup; it's cached.)
   let weekNeedingProp: number | null = null;
+  let lastGraded: typeof prop.$inferSelect | undefined;
   if (isAdmin) {
+    [lastGraded] = await db
+      .select()
+      .from(prop)
+      .where(eq(prop.status, "graded"))
+      .orderBy(desc(prop.season), desc(prop.week))
+      .limit(1);
     const upcoming = await getPickemWeek().catch(() => null);
     const hasIt = current && upcoming && current.season === upcoming.season && current.week === upcoming.week;
     if (upcoming && !hasIt) weekNeedingProp = upcoming.week;
@@ -78,6 +86,8 @@ export default async function PickemPage() {
         </Link>
       ) : null}
 
+      {isAdmin ? <AdminShare current={current} lastGraded={lastGraded} /> : null}
+
       {current ? (
         <CurrentProp prop={current} viewerManagerId={viewer.manager.sleeperUserId} />
       ) : (
@@ -87,6 +97,38 @@ export default async function PickemPage() {
         </div>
       )}
     </div>
+  );
+}
+
+/**
+ * Admins share from here as well as from the Admin page: this week's prop
+ * while voting is open, and the newest graded week's recap.
+ */
+function AdminShare({
+  current,
+  lastGraded,
+}: {
+  current: typeof prop.$inferSelect | undefined;
+  lastGraded: typeof prop.$inferSelect | undefined;
+}) {
+  const announce = current && current.status === "open" && current.locksAt > new Date() ? current : null;
+  if (!announce && !lastGraded) return null;
+  return (
+    <section className="mb-4 rounded-lg border border-emerald-600/40 bg-navy-800 px-4 pb-4">
+      <h2 className="pt-4 text-xs font-bold tracking-wide text-emerald-400 uppercase">Admin · post to WhatsApp</h2>
+      {announce ? (
+        <div className="mt-2">
+          <p className="text-sm text-fg-muted">Week {announce.week} prop</p>
+          <SharePost propId={announce.id} kind="announcement" />
+        </div>
+      ) : null}
+      {lastGraded ? (
+        <div className="mt-4">
+          <p className="text-sm text-fg-muted">Week {lastGraded.week} recap</p>
+          <SharePost propId={lastGraded.id} kind="recap" />
+        </div>
+      ) : null}
+    </section>
   );
 }
 
