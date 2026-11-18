@@ -1,6 +1,6 @@
 import "server-only";
 
-const FROM = process.env.EMAIL_FROM ?? "DDFL <login@digitaldashfl.com>";
+const FROM = process.env.EMAIL_FROM ?? "DDFL <login@mail.digitaldashfl.com>";
 
 /**
  * Sends the 6-digit sign-in code via Resend's REST API (no SDK — it's one
