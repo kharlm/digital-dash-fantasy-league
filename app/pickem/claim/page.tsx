@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 
 import { ClaimTeamList } from "@/components/pickem/claim-team-list";
+import { SignOutButton } from "@/components/pickem/sign-out-button";
 import { redraftTeamNames } from "@/lib/data/pickem-teams";
 import { db } from "@/lib/db";
 import { manager } from "@/lib/db/schema";
@@ -36,6 +37,10 @@ export default async function ClaimTeamPage() {
       />
       <p className="mt-6 text-xs text-fg-subtle">
         Signed in as {viewer.email}. Picked the wrong team? Ask Rosemond or Matt to unlink it.
+      </p>
+      {/* Wrong account (e.g. a work email) — the only way back to the sign-in page from here. */}
+      <p className="mt-2 text-xs">
+        Not you? <SignOutButton />
       </p>
     </div>
   );
