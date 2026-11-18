@@ -11,7 +11,7 @@ import Image from "next/image";
  */
 export function Hero() {
   return (
-    <main className="flex flex-1 flex-col items-center justify-center gap-8 px-6 py-24 text-center">
+    <main className="flex flex-col items-center gap-6 px-6 pt-8 pb-10 text-center sm:gap-8 sm:pt-14 sm:pb-12">
       <div className="animate-hero-in">
         <Image
           src="/logo.png"
@@ -19,7 +19,7 @@ export function Hero() {
           width={363}
           height={460}
           priority
-          className="h-56 w-auto drop-shadow-[0_0_40px_rgba(13,95,224,0.35)] sm:h-72"
+          className="h-40 w-auto drop-shadow-[0_0_40px_rgba(13,95,224,0.35)] sm:h-60"
         />
       </div>
 
