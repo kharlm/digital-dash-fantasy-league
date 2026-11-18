@@ -221,3 +221,52 @@
     animation: none;
   }
 }
+
+/*
+ * Auction caps page: bars grow in and the dollar figures count up, once,
+ * on load. Plain CSS (no JS) for the same reason as the hero above — it
+ * starts at first paint instead of waiting for hydration.
+ *
+ * The count-up animates a registered integer property and prints it with a
+ * CSS counter. The element's inline `--n` is the final value and `--from`
+ * the start, so with no animation (reduced motion) or no @property support
+ * it simply shows the final number.
+ */
+@property --n {
+  syntax: "<integer>";
+  initial-value: 0;
+  inherits: false;
+}
+
+@keyframes count-up {
+  from {
+    --n: var(--from, 0);
+  }
+}
+
+.count-up {
+  counter-reset: n var(--n);
+  animation: count-up 4s cubic-bezier(0.25, 0.6, 0.3, 1) both;
+}
+
+.count-up::after {
+  content: var(--prefix, "$") counter(n);
+}
+
+@keyframes bar-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.bar-grow {
+  transform-origin: left;
+  animation: bar-grow 4s cubic-bezier(0.25, 0.6, 0.3, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .count-up,
+  .bar-grow {
+    animation: none;
+  }
+}

@@ -1,0 +1,1 @@
+ALTER TABLE "prop" DROP COLUMN "push_payout_cents";
