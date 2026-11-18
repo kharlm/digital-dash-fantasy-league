@@ -49,7 +49,7 @@ export default async function LedgerPage() {
             {table.map((r, i) => {
               const me = r.managerId === viewer.manager.sleeperUserId;
               // Rows animate in one after another, top down.
-              const delay = `${i * 250}ms`;
+              const delay = `${i * 150}ms`;
               return (
                 <tr key={r.managerId} className={`border-b border-navy-600/50 last:border-0 ${me ? "bg-gold-500/5" : ""}`}>
                   <td className="py-3 pl-4 text-fg-subtle tabular-nums">{r.rank}</td>

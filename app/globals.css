@@ -246,7 +246,7 @@
 
 .count-up {
   counter-reset: n var(--n);
-  animation: count-up 4s cubic-bezier(0.25, 0.6, 0.3, 1) both;
+  animation: count-up 2.5s cubic-bezier(0.25, 0.6, 0.3, 1) both;
 }
 
 .count-up::after {
@@ -261,7 +261,7 @@
 
 .bar-grow {
   transform-origin: left;
-  animation: bar-grow 4s cubic-bezier(0.25, 0.6, 0.3, 1) both;
+  animation: bar-grow 2.5s cubic-bezier(0.25, 0.6, 0.3, 1) both;
 }
 
 @media (prefers-reduced-motion: reduce) {
