@@ -1,6 +1,6 @@
 import "server-only";
 
-import { and, eq, lte } from "drizzle-orm";
+import { and, eq, gte, lte } from "drizzle-orm";
 
 import { db } from "@/lib/db";
 import { ledgerEntry, prop, vote, type PropResult } from "@/lib/db/schema";
@@ -95,4 +95,48 @@ export async function gradeDueProps() {
     }
   }
   return outcomes;
+}
+
+/**
+ * NFL stat corrections land Wednesday or Thursday, after Tuesday's grading.
+ * A result graded from Sleeper's scores is re-checked every day until this
+ * long after voting locked — through the Friday after the week (a Thursday
+ * lock plus 9 days), then it's final.
+ */
+export const CORRECTION_WINDOW_MS = 9 * 24 * 60 * 60 * 1000;
+
+const sameOutcome = (a: PropResult, b: PropResult) =>
+  a.push === b.push && [...a.winningOptions].sort().join() === [...b.winningOptions].sort().join();
+
+export type Correction = { prop: Prop; before: PropResult; after: PropResult };
+
+/**
+ * The daily stat-correction check: re-pulls Sleeper's scores for recently
+ * graded props and re-grades any whose winner changed, moving the money
+ * (applyResult replaces payouts, never adds). A score that moves without
+ * changing who won is left alone. Results an admin set by hand (no scores, or
+ * a note) are never second-guessed.
+ */
+export async function recheckRecentResults(now = new Date()) {
+  const recent = await db
+    .select()
+    .from(prop)
+    .where(and(eq(prop.status, "graded"), gte(prop.locksAt, new Date(now.getTime() - CORRECTION_WINDOW_MS))));
+
+  const corrections: Correction[] = [];
+  const errors: { prop: Prop; reason: string }[] = [];
+  for (const p of recent) {
+    const before = p.result;
+    if (!before?.scores || before.note) continue;
+    try {
+      const after = decideResult(p, await getRedraftScores(p.week));
+      if (sameOutcome(before, after)) continue;
+      await applyResult(p, after);
+      corrections.push({ prop: p, before, after });
+    } catch (error) {
+      console.error(`[pickem] re-checking prop ${p.id} failed:`, error);
+      errors.push({ prop: p, reason: String(error) });
+    }
+  }
+  return { corrections, errors };
 }

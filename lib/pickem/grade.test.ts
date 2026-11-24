@@ -5,7 +5,7 @@ import { db } from "@/lib/db";
 import { ledgerEntry, prop, vote } from "@/lib/db/schema";
 import { resetTestDb, seedManagers, type TestDb } from "@/test/db";
 
-import { gradeDueProps, gradeFromScores, gradeManually } from "./grade";
+import { CORRECTION_WINDOW_MS, gradeDueProps, gradeFromScores, gradeManually, recheckRecentResults } from "./grade";
 import { getRedraftScores } from "./matchups";
 import { buildProp } from "./props";
 import { isNflWeekFinal } from "./schedule";
@@ -170,6 +170,53 @@ describe("the daily job (gradeDueProps)", () => {
 
     expect(outcomes.find((o) => o.propId === broken.id)).toMatchObject({ status: "error" });
     expect(outcomes.find((o) => o.propId === good.id)).toMatchObject({ status: "graded" });
+    expect(await ledger()).toEqual(["s-kharl 100 cap2027"]);
+  });
+});
+
+describe("the daily stat-correction check (recheckRecentResults)", () => {
+  const corrected = () => vi.mocked(getRedraftScores).mockResolvedValue(scores({ 1: 125, 2: 115.56 })); // margin 9.44: under now wins
+
+  it("re-grades when a correction changes who won, moving the money", async () => {
+    const p = await spreadProp();
+    await votes(p.id, { "s-kharl": "over", "s-matt": "under" });
+    await gradeFromScores(p);
+    corrected();
+
+    const { corrections } = await recheckRecentResults();
+
+    expect(corrections).toHaveLength(1);
+    expect(corrections[0]).toMatchObject({ before: { winningOptions: ["over"] }, after: { winningOptions: ["under"] } });
+    expect(await ledger()).toEqual(["s-matt 100 cap2027"]);
+  });
+
+  it("leaves a result alone when scores move but the winner doesn't", async () => {
+    const p = await spreadProp();
+    await votes(p.id, { "s-kharl": "over" });
+    await gradeFromScores(p);
+    vi.mocked(getRedraftScores).mockResolvedValue(scores({ 1: 133, 2: 115.56 }));
+
+    expect((await recheckRecentResults()).corrections).toEqual([]);
+    expect(await ledger()).toEqual(["s-kharl 100 cap2027"]);
+  });
+
+  it("never second-guesses a result an admin set by hand", async () => {
+    const p = await spreadProp();
+    await votes(p.id, { "s-kharl": "over", "s-matt": "under" });
+    await gradeManually(p, ["over"], "commissioner's call");
+    corrected();
+
+    expect((await recheckRecentResults()).corrections).toEqual([]);
+    expect(await ledger()).toEqual(["s-kharl 100 cap2027"]);
+  });
+
+  it("stops checking once the week is past the correction window", async () => {
+    const p = await spreadProp({ locksAt: new Date(Date.now() - CORRECTION_WINDOW_MS - 86_400_000) });
+    await votes(p.id, { "s-kharl": "over", "s-matt": "under" });
+    await gradeFromScores(p);
+    corrected();
+
+    expect((await recheckRecentResults()).corrections).toEqual([]);
     expect(await ledger()).toEqual(["s-kharl 100 cap2027"]);
   });
 });
