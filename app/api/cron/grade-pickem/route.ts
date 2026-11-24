@@ -3,9 +3,10 @@ import { NextResponse } from "next/server";
 import { gradeDueProps } from "@/lib/pickem/grade";
 
 /**
- * Vercel Cron hits this daily (see vercel.json). Grading only happens once a
- * prop's NFL week is completely final, and re-running is harmless, so a
- * daily schedule just means results land the first morning they can —
+ * A Vercel Schedule hits this daily at 10 AM ET (see vercel.json). Grading
+ * only happens once a prop's NFL week is completely final, and re-running is
+ * harmless, so a daily schedule just means results land the first morning
+ * they can —
  * normally Tuesday, after Monday Night Football.
  *
  * Vercel sends `Authorization: Bearer $CRON_SECRET`. Without the secret

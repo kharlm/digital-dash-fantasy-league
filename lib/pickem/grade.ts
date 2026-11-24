@@ -75,7 +75,7 @@ export async function gradeManually(p: Prop, winningOptions: string[], note?: st
 }
 
 /**
- * What the Tuesday cron runs: every locked, still-open prop whose NFL week
+ * What the daily schedule runs: every locked, still-open prop whose NFL week
  * is over gets graded. Safe to
  * run any number of times.
  */
