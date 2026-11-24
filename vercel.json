@@ -2,7 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "schedules": {
     "grade-pickem": {
-      "schedule": "0 10 * * *",
+      "schedule": "0 7 * * *",
       "timezone": "America/New_York",
       "path": "/api/cron/grade-pickem",
       "requestMethod": "GET"
